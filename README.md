@@ -3,6 +3,7 @@
 ## Team Members:
 - Tinn Tseng
 - Abel Asres
+- Nikita Sushko
 
 ## What is Qwirkle
 Qwirkle is turn based game that challenges player’s ability to recognize patterns in color and shapes.
