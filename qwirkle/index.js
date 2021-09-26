@@ -22,6 +22,8 @@ const app = express();
 const mongoose =require('mongoose'); 
 const exphbs= require('express-handlebars');
 
+const bodyParser=require('body-parser');
+
 //Can help store user data between http requests
 const session = require('express-session');
 
@@ -32,6 +34,17 @@ app.set('view engine', 'handlebars');
 //load the enviornment varible file
 require('dotenv').config({path:"./config/keys.env"}); 
 
+
+//parse application/x-www-form-urlencoded
+//allows you to use req.body.(property name)
+app.use(bodyParser.urlencoded({extended: false}));
+
+// parse application/json
+app.use(bodyParser.json())
+
+//load each controller
+const generalController=require("./controllers/general_routes");
+
 //
 app.use(session({
     secret: process.env.SESSION_KEY,
@@ -39,6 +52,9 @@ app.use(session({
     saveUninitialized: true,
   //  cookie: { secure: true }
   }))
+
+//Map each controller to the app object
+app.use('/', generalController);
 
 
 //Connect to Database
@@ -49,9 +65,13 @@ mongoose.connect(process.env.MONGO_DB_CONNECT)
 .catch(err=> console.log(`Could not connect to MongoDB: ${err}`));
 
 //Test request
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+//app.get('/', (req,res)=>{
+//  res.render('home',{
+//    title: 'Home'
+//  })
+//});
+
+
 
 app.listen(process.env.PORT, () => {
   console.log(`Example app listening at http://localhost:${process.env.PORT}`);
