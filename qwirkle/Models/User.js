@@ -13,7 +13,7 @@ const userSchema = new Schema({
     required: true
   },
   
-  userType: String,
+ //userType: String,
 
   createdAt: { 
     type: Date, 
