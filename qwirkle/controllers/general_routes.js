@@ -30,8 +30,8 @@ router.post('/registration',(req,res)=>{
         password:[],
         verifyPassword:[]
     }
-
-    const entered_feilds = {
+    
+    const entered_fields = {
         username:[],
         email:[] 
     }
@@ -44,12 +44,12 @@ router.post('/registration',(req,res)=>{
     const ck_userName= /^[A-Za-z0-9]{6,12}$/;
     const ck_password =  /^[A-Za-z0-9]{8,20}$/;
     const ck_email = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
-    let passValidation  =true;
+    let passValidation = true;
     
     //Store submited values to be autofilled if any errors
     if(userName) {
         console.log('storing username');
-        entered_feilds.username.push(userName);
+        entered_fields.username.push(userName);
     }
 
     if(email) {
@@ -58,6 +58,7 @@ router.post('/registration',(req,res)=>{
     }
 
     //check username
+    /*
     if (!ck_userName.test(userName)){
         
         console.log('checking userName');
@@ -65,7 +66,7 @@ router.post('/registration',(req,res)=>{
         errors.username.push(error_messages[0]);
         passValidation = false;
     }
-
+    
     //check email
     if (!ck_email.test(email)){
         
@@ -103,7 +104,7 @@ router.post('/registration',(req,res)=>{
             populate_fields: entered_fields
         });
     } 
-    
+    */
     if (passValidation) {
         //validation has passed store user to cluster
         
