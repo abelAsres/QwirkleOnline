@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router(); 
+const bcrypt = require('bcryptjs');
 const userModel = require('../Models/User');
 
 //Home Route
@@ -20,7 +21,6 @@ router.get('/registration',(req,res)=>{
 router.post('/registration',(req,res)=>{
     console.log('starting registration')
     const{userName,email,password,checkPassword}=req.body;
-
 
     //TODO: create validation for userName, email and passwords
 
@@ -153,6 +153,69 @@ router.get('/login',(req,res)=>{
     res.render('general/login',{
         title:"Login"
     });
+});
+
+router.get('/dashboard',(req,res)=>{
+    res.render('general/dashboard',{
+        title:"dashboard"
+    });
+});
+
+router.post('/login',(req,res)=>{
+    const{email,password}=req.body;
+    const entered_fields = {
+        email:[],
+        password:[] 
+    }
+
+    const errors = {
+        email:[],
+        password:[]
+    }
+    const error_messages = ['No account with that email',
+                            'Incorrect password',
+    ];
+
+    let passValidation = true;
+    
+    //Store submited values to be autofilled if any errors
+    if(email) {
+        entered_fields.email.push(email);
+    }
+    //Store submited values as password
+    if(password) {
+        entered_fields.password.push(password);
+    }
+    
+    userModel.findOne({email:email},{_id:0,__v:0})
+    .then((doc=>{
+        if(doc!=null){
+            const user = new userModel(doc);
+            console.log(user);
+            console.log(doc.password, " ", entered_fields.password);
+            bcrypt.compare(password, doc.password).then((result)=>{
+                if(result){
+                    res.redirect('dashboard');
+                }
+                else{
+                    errors.password.push(error_messages[1]);
+                    res.render('general/login', {
+                        title: 'Login',
+                        errors: errors,
+                        populate_fields: entered_fields
+                    });            
+                }
+            })
+        } else {
+            errors.email.push(error_messages[0]);
+            res.render('general/login', {
+                title: 'Login',
+                errors: errors,
+                populate_fields: entered_fields
+            });    
+        }
+    }))
+    .catch(err=>console.log(`Error occured when retrieving user info; Error: ${err}`));
 });
 
 module.exports=router;
