@@ -58,7 +58,7 @@ router.post('/registration',(req,res)=>{
     }
 
     //check username
-    /*
+    
     if (!ck_userName.test(userName)){
         
         console.log('checking userName');
@@ -86,9 +86,8 @@ router.post('/registration',(req,res)=>{
     }
 
     //verify password
-    if (checkPassword === password){
-        
-        console.log('verifing email');
+    if (checkPassword.localeCompare(password) != 0) {
+        console.log('verifing password');
         //document.getElementById('check-password-error').innerHTML=error_messages[3];
         errors.verifyPassword.push(error_messages[3]);
         passValidation = false;
@@ -104,7 +103,7 @@ router.post('/registration',(req,res)=>{
             populate_fields: entered_fields
         });
     } 
-    */
+    
     if (passValidation) {
         //validation has passed store user to cluster
         
