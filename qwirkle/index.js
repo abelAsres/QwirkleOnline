@@ -40,7 +40,10 @@ require('dotenv').config({path:"./config/keys.env"});
 app.use(bodyParser.urlencoded({extended: false}));
 
 // parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
+
+//load static resources(assests)
+app.use(express.static("public"));
 
 //load each controller
 const generalController=require("./controllers/general_routes");

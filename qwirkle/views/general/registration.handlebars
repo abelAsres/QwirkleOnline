@@ -13,14 +13,14 @@
                 <small id="passwordHelpBlock" class="form-text text-muted">
                     Your username must be 6-12 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
                 </small>
-                {{#if errors.username}}<div id="username-error">{{errors.username}}</div>{{/if}}
+                {{#if errors.username}}<div class="text-danger" id="username-error">{{errors.username}}</div>{{/if}}
             </div>
         </div>
         <div class="form-group row">
             <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
             <div class="col-sm-10">
                 <input type="email" class="form-control" id="inputEmail" name= "email" placeholder="Email" required value={{populate_fields.email}}>
-                {{#if errors.email}}<div id="email-error">{{errors.email}}</div>{{/if}}
+                {{#if errors.email}}<div class="text-danger" id="email-error">{{errors.email}}</div>{{/if}}
             </div>
         </div>
         <div class="form-group row">
@@ -30,7 +30,7 @@
                 <small id="passwordHelpBlock" class="form-text text-muted">
                     Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
                 </small>
-                {{#if errors.password}}<div id="password-error">{{errors.password}}</div>{{/if}}
+                {{#if errors.password}}<div class="text-danger" id="password-error">{{errors.password}}</div>{{/if}}
             </div>
         </div>
         <div class="form-group row">
@@ -40,7 +40,7 @@
                 <small id="verifyPasswordHelpBlock" class="form-text text-muted">
                     Please re-enter your password for verfication
                 </small>
-                {{#if errors.verfiyPassword}}<div id="check-password-error">{{errors.verfiyPassword}}</div>{{/if}}
+                {{#if errors.verifyPassword}}<div class="text-danger" id="check-password-error">{{errors.verifyPassword}}</div>{{/if}}
             </div>
         </div>
         <div class="form-group row">

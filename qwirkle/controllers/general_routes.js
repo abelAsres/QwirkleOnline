@@ -38,11 +38,12 @@ router.post('/registration',(req,res)=>{
     const error_messages = ['Invalid username: Please only use alphanumeric characters',
                             'Invalid email',
                             'Invalid password: You can only use alphanumeric characters and (!@$%&*_)',
-                            'Password does not match'
+                            'Password does not match',
+                            'This email is already in use'
     ];
 
     const ck_userName= /^[A-Za-z0-9]{6,12}$/;
-    const ck_password =  /^[A-Za-z0-9]{8,20}$/;
+    const ck_password =  /^[A-Za-z0-9!@$%&*_]{8,20}$/;
     const ck_email = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
     let passValidation = true;
     
@@ -111,11 +112,11 @@ router.post('/registration',(req,res)=>{
         userModel.findOne({email:email},{_id:0,__v:0})
         .then((doc=>{
             if(doc!=null){
-                console.log('doc is : ');
-                console.log(doc);
+                errors.email.push(error_messages[4])
                 res.render('general/registration',{
                     title:"Registration",
                     errors:errors,
+                    populate_fields: entered_fields,
                     data:doc
                 });
             } else {
@@ -127,7 +128,7 @@ router.post('/registration',(req,res)=>{
                 2. From the instance, call the save method
                 */
                
-        console.log('creating new user');
+                console.log('creating new user');
 
                 const newUser={
                     username:userName,
@@ -182,9 +183,9 @@ router.post('/login',(req,res)=>{
         entered_fields.email.push(email);
     }
     //Store submited values as password
-    if(password) {
-        entered_fields.password.push(password);
-    }
+    //if(password) {
+     //   entered_fields.password.push(password);
+   // }
     
     userModel.findOne({email:email},{_id:0,__v:0})
     .then((doc=>{
