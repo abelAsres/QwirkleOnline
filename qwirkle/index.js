@@ -50,11 +50,16 @@ const generalController=require("./controllers/general_routes");
 
 //
 app.use(session({
-    secret: process.env.SESSION_KEY,
-    resave: false,
-    saveUninitialized: true,
+  secret: process.env.SESSION_KEY,
+  resave: false,
+  saveUninitialized: true,
   //  cookie: { secure: true }
   }))
+
+app.use((req,res,next)=>{
+  res.locals.user=req.session.userInfo;
+  next();
+});
 
 //Map each controller to the app object
 app.use('/', generalController);

@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router(); 
 const bcrypt = require('bcryptjs');
 const userModel = require('../Models/User');
+const isAuthenticated = require('../middleware/authenticateUser');
+const isAuthorized = require('../middleware/authorizationUser');
 
 //Home Route
 router.get('/', (req,res)=>{
@@ -59,7 +61,6 @@ router.post('/registration',(req,res)=>{
     }
 
     //check username
-    
     if (!ck_userName.test(userName)){
         
         console.log('checking userName');
@@ -148,17 +149,25 @@ router.post('/registration',(req,res)=>{
     } 
 });
 
-//registration route
+//login route
 router.get('/login',(req,res)=>{
     res.render('general/login',{
         title:"Login"
     });
 });
 
-router.get('/dashboard',(req,res)=>{
-    res.render('general/dashboard',{
-        title:"dashboard"
-    });
+// router.get('/dashboard',(req,res)=>{
+//     res.render('general/dashboard',{
+//         title:"dashboard"
+//     });
+// });
+
+router.get('/dashboard',isAuthenticated,isAuthorized);
+
+//logout route
+router.get('/logout',(req,res)=>{
+    req.session.destroy();
+    res.redirect("/login");
 });
 
 router.post('/login',(req,res)=>{
@@ -195,6 +204,7 @@ router.post('/login',(req,res)=>{
             console.log(doc.password, " ", entered_fields.password);
             bcrypt.compare(password, doc.password).then((result)=>{
                 if(result){
+                    req.session.userInfo = doc;
                     res.redirect('dashboard');
                 }
                 else{
