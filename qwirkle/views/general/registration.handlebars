@@ -21,14 +21,14 @@
 <div class="container">
     <div class="row">
         <div class="col" id="title_registration">
-            <h1>Qwirkle</h1>
+             <span style='color: #ff708e'>Q</span><span style='color: #ffac4b'>w</span><span style='color: #f5df68'>i</span><span style='color: #a5ff6f'>r</span><span style='color: #8fccff'>k</span><span style='color: #d18fff'>l</span><span style='color: #ff708e'>e</span>
         </div>
     </div>
 
     <form action="/registration" method=POST>
         <div class="form-group row">
-            <label for="inputUsername" class="col-sm-2 col-form-label">User Name</label>
-            <div class="col-sm-10">
+            <label for="inputUsername" class="col-sm-2 col-form-label" id="username-label">User Name</label>
+            <div class="col-sm-3">
                 <input type="text" class="form-control" id="inputUsername" name="userName" placeholder="Username" required value={{populate_fields.username}}>
                 <small id="passwordHelpBlock" class="form-text text-muted">
                     Your username must be 6-12 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
@@ -37,15 +37,15 @@
             </div>
         </div>
         <div class="form-group row">
-            <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
-            <div class="col-sm-10">
+            <label for="inputEmail" class="col-sm-2 col-form-label" id="email-label">Email</label>
+            <div class="col-sm-3">
                 <input type="email" class="form-control" id="inputEmail" name= "email" placeholder="Email" required value={{populate_fields.email}}>
                 {{#if errors.email}}<div class="text-danger" id="email-error">{{errors.email}}</div>{{/if}}
             </div>
         </div>
         <div class="form-group row">
-            <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
-            <div class="col-sm-10">
+            <label for="inputPassword" class="col-sm-2 col-form-label" id="password-label">Password</label>
+            <div class="col-sm-3">
                 <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Password" required>
                 <small id="passwordHelpBlock" class="form-text text-muted">
                     Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
@@ -54,8 +54,8 @@
             </div>
         </div>
         <div class="form-group row">
-            <label for="verfiyPassword" class="col-sm-2 col-form-label">Verify Password</label>
-            <div class="col-sm-10">
+            <label for="verfiyPassword" class="col-sm-2 col-form-label" id="verifyPassword-label">Verify Password</label>
+            <div class="col-sm-3">
                 <input type="password" class="form-control" id="verfiyPassword" name="checkPassword" placeholder="Verify Password" required>
                 <small id="verifyPasswordHelpBlock" class="form-text text-muted">
                     Please re-enter your password for verfication
@@ -65,7 +65,7 @@
         </div>
         <div class="form-group row">
             <div class="col-sm-10">
-                <button type="submit" class="btn btn-primary">Register</button>
+                <button type="submit" class="btn btn-primary" id="register">Register</button>
             </div>
         </div>
     </form>

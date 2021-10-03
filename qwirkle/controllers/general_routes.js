@@ -8,14 +8,16 @@ const isAuthorized = require('../middleware/authorizationUser');
 //Home Route
 router.get('/', (req,res)=>{
     res.render('general/home',{
-      title: 'Home'
+      title: 'Home',
+      style: 'home.css'
     })
 });
 
 //registration route
 router.get('/registration',(req,res)=>{
     res.render('general/registration',{
-        title:"Registration"
+        title:"Registration",
+        style: 'registration.css'
     });
 });
 
@@ -152,7 +154,8 @@ router.post('/registration',(req,res)=>{
 //login route
 router.get('/login',(req,res)=>{
     res.render('general/login',{
-        title:"Login"
+        title:"Login",
+        style: 'login.css'
     });
 });
 
