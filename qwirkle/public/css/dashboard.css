@@ -1,94 +1,94 @@
 @font-face {
-    font-family: 'forte';
-    src: url(../fonts/ForteRegular.ttf);
-    font-style: normal;
+  font-family: "forte";
+  src: url(../fonts/ForteRegular.ttf);
+  font-style: normal;
 }
 
-#title_registration {
-    font-family: forte;
-    font-size: 120px;
-    text-align: center;
-    padding-top: 8%;
+#title_dashboard {
+  font-family: forte;
+  font-size: 120px;
+  text-align: center;
+  padding-top: 8%;
 }
 
 body {
-    background-color: #fbf5e1 !important;
+  background-color: #fbf5e1 !important;
 }
 
 #email-label {
-    color:skyblue;
-    font-weight: bold;
-    text-align: left;
-    font-size: x-large;
-    margin-left: 30%;
-    position:relative;
+  color: skyblue;
+  font-weight: bold;
+  text-align: left;
+  font-size: x-large;
+  margin-left: 30%;
+  position: relative;
 }
 
 #username-label {
-    color:skyblue;
-    font-weight: bold;
-    text-align: left;
-    font-size: x-large;
-    margin-left: 30%;
-    position:relative;
+  color: skyblue;
+  font-weight: bold;
+  text-align: left;
+  font-size: x-large;
+  margin-left: 30%;
+  position: relative;
 }
 
 #verifyPassword-label {
-    color:skyblue;
-    font-weight: bold;
-    text-align: left;
-    font-size: x-large;
-    margin-left: 30%;
-    position:relative;
+  color: skyblue;
+  font-weight: bold;
+  text-align: left;
+  font-size: x-large;
+  margin-left: 30%;
+  position: relative;
 }
 
 #password-label {
-    color:skyblue;
-    font-weight: bold;
-    text-align: left;
-    font-size: x-large;
-    margin-left: 30%;
-    position:relative;
+  color: skyblue;
+  font-weight: bold;
+  text-align: left;
+  font-size: x-large;
+  margin-left: 30%;
+  position: relative;
 }
 
 #inputEmail {
-    border-color: skyblue;
+  border-color: skyblue;
 }
 
 #inputUsername {
-    border-color: skyblue;
+  border-color: skyblue;
 }
 
 #inputPassword {
-    border-color: skyblue;
+  border-color: skyblue;
 }
 
 #verifyPassword {
-    border-color: skyblue;
+  border-color: skyblue;
 }
 
 #register {
-    display: inline-block;
-    padding: 10px 25px;
-    font-size: 24px;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    font-weight: bold;
-    outline: none;
-    color: #fff;
-    background-color: skyblue;
-    border: none;
-    border-radius: 15px; 
-    align-content: center;
-    padding-left: 10%;
-    padding-right: 10%;
-    text-align: center;
-    margin-top: 2%;
-    margin-left:48%;
-    position:static;
+  display: inline-block;
+  padding: 10px 25px;
+  font-size: 24px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  font-weight: bold;
+  outline: none;
+  color: #fff;
+  background-color: skyblue;
+  border: none;
+  border-radius: 15px;
+  align-content: center;
+  padding-left: 10%;
+  padding-right: 10%;
+  text-align: center;
+  margin-top: 2%;
+  margin-left: 48%;
+  position: static;
 }
 
 #register:hover {
-    background-color: rgb(60, 164, 206);
+  background-color: rgb(60, 164, 206);
 }
