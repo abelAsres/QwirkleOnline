@@ -6,11 +6,17 @@
     </div>
 
     <div class="row">
-        <div class="col">
-            <a class="btn btn-primary" href="/login" role="button" id="login">LOG-IN</a>
-        </div>
-        <div class="col">
-            <a class="btn btn-primary" href="/registration" role="button" id="register">REGISTER</a>
-        </div>
+        {{#if user}}
+             <div class="col">
+                <a class="btn btn-primary" href="/logout" role="button" id="logout">LOG-OUT</a>
+            </div>
+        {{else}}
+            <div class="col">
+                <a class="btn btn-primary" href="/login" role="button" id="login">LOG-IN</a>
+            </div>
+            <div class="col">
+                <a class="btn btn-primary" href="/registration" role="button" id="register">REGISTER</a>
+            </div>
+        {{/if}}
     </div>
 </div>

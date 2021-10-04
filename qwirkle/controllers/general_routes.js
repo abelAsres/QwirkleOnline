@@ -2,8 +2,6 @@ const express = require('express');
 const router = express.Router(); 
 const bcrypt = require('bcryptjs');
 const userModel = require('../Models/User');
-const isAuthenticated = require('../middleware/authenticateUser');
-const isAuthorized = require('../middleware/authorizationUser');
 const gameModel = require('../Models/Game');
 
 //Home Route
@@ -160,29 +158,6 @@ router.get('/login',(req,res)=>{
     });
 });
 
-// router.get('/dashboard',(req,res)=>{
-//     res.render('general/dashboard',{
-//         title:"dashboard"
-//     });
-// });
-
-router.get('/dashboard',isAuthenticated,isAuthorized);
-
-
-/*
-, (req, res)=>{
-    console.log("Redirected to Dashboard");
-    // Add game finder 
-    
-    gameModel.find()
-    
-    console.log("User Name: " + req.session.userInfo.email);
-    res.render('general/dashboard',{
-        title:"Dashboard",
-        style: 'dashboard.css',
-        name: req.session.userInfo.email
-    });
-*/
 //logout route
 router.get('/logout',(req,res)=>{
     req.session.destroy();
@@ -203,17 +178,11 @@ router.post('/login',(req,res)=>{
     const error_messages = ['No account with that email',
                             'Incorrect password',
     ];
-
-    let passValidation = true;
     
     //Store submited values to be autofilled if any errors
     if(email) {
         entered_fields.email.push(email);
     }
-    //Store submited values as password
-    //if(password) {
-     //   entered_fields.password.push(password);
-   // }
     
     userModel.findOne({email:email},{_id:0,__v:0})
     .then((doc=>{
@@ -224,7 +193,7 @@ router.post('/login',(req,res)=>{
             bcrypt.compare(password, doc.password).then((result)=>{
                 if(result){
                     req.session.userInfo = doc;
-                    res.redirect('dashboard');
+                    res.redirect('user/dashboard');
                 }
                 else{
                     errors.password.push(error_messages[1]);

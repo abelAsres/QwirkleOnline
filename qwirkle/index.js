@@ -47,6 +47,7 @@ app.use(express.static("public"));
 
 //load each controller
 const generalController=require("./controllers/general_routes");
+const userController = require("./controllers/user_routes");
 
 //
 app.use(session({
@@ -61,8 +62,22 @@ app.use((req,res,next)=>{
   next();
 });
 
+/*
+    This will allow specific forms and/or links that were submitted/pressed to send
+    PUT and DELETE requests
+*/
+app.use((req,res,next)=>{
+  if(req.query.method=="PUT"){
+      req.method="PUT";
+  }else if(req.query.method=="DELETE"){
+      req.method="DELETE";
+  }
+  next();
+});
+
 //Map each controller to the app object
 app.use('/', generalController);
+app.use('/user',userController);
 
 
 //Connect to Database
@@ -71,15 +86,6 @@ mongoose.connect(process.env.MONGO_DB_CONNECT)
     console.log('Connected to MongoDB')
 })
 .catch(err=> console.log(`Could not connect to MongoDB: ${err}`));
-
-
-//Test request
-//app.get('/', (req,res)=>{
-//  res.render('home',{
-//    title: 'Home'
-//  })
-//});
-
 
 app.listen(process.env.PORT, () => {
   console.log(`Example app listening at http://localhost:${process.env.PORT}`);
