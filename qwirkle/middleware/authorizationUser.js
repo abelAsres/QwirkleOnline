@@ -6,8 +6,11 @@ const loadDashBoard = (req,res,next) =>{
       //  res.render('')
     //}
     //else {
+        console.log(req.session.userInfo);
         res.render('general/dashboard',{
-            title: 'User Page'
+            title: 'User Page',
+            style: 'dashboard.css',
+            name: req.session.userInfo.email
         });
     //}
 }

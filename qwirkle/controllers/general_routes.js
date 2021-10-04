@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const userModel = require('../Models/User');
 const isAuthenticated = require('../middleware/authenticateUser');
 const isAuthorized = require('../middleware/authorizationUser');
+const gameModel = require('../Models/Game');
 
 //Home Route
 router.get('/', (req,res)=>{
@@ -138,13 +139,13 @@ router.post('/registration',(req,res)=>{
                     email:email,
                     password:password
                 }
-
                 const user = new userModel(newUser);
+                console.log(user);
                 user.save()
                 .then(()=>{
                     res.redirect('login');
                 })
-
+                
             }
         }))
         .catch(err=>console.log(`Error occured when inserting in the database; Error: ${err}`));
@@ -167,6 +168,21 @@ router.get('/login',(req,res)=>{
 
 router.get('/dashboard',isAuthenticated,isAuthorized);
 
+
+/*
+, (req, res)=>{
+    console.log("Redirected to Dashboard");
+    // Add game finder 
+    
+    gameModel.find()
+    
+    console.log("User Name: " + req.session.userInfo.email);
+    res.render('general/dashboard',{
+        title:"Dashboard",
+        style: 'dashboard.css',
+        name: req.session.userInfo.email
+    });
+*/
 //logout route
 router.get('/logout',(req,res)=>{
     req.session.destroy();
