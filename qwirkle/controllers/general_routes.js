@@ -25,6 +25,7 @@ router.post('/registration',(req,res)=>{
     console.log('starting registration')
     const{userName,email,password,checkPassword}=req.body;
 
+
     //TODO: create validation for userName, email and passwords
 
     const errors = {
@@ -135,7 +136,7 @@ router.post('/registration',(req,res)=>{
                 console.log('creating new user');
 
                 const newUser={
-                    username:userName,
+                    userName:userName,
                     email:email,
                     password:password
                 }
