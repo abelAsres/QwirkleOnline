@@ -102,6 +102,7 @@ router.post('/registration',(req,res)=>{
         console.log('did not pass validation');
         res.render('general/registration', {
             title: 'Registration',
+            style:'registration.css',
             errors: errors,
             populate_fields: entered_fields
         });
@@ -117,6 +118,7 @@ router.post('/registration',(req,res)=>{
                 errors.email.push(error_messages[4])
                 res.render('general/registration',{
                     title:"Registration",
+                    style:'registration.css',
                     errors:errors,
                     populate_fields: entered_fields,
                     data:doc
@@ -161,7 +163,7 @@ router.get('/login',(req,res)=>{
 //logout route
 router.get('/logout',(req,res)=>{
     req.session.destroy();
-    res.redirect("/login");
+    res.redirect("/");
 });
 
 router.post('/login',(req,res)=>{
@@ -199,6 +201,7 @@ router.post('/login',(req,res)=>{
                     errors.password.push(error_messages[1]);
                     res.render('general/login', {
                         title: 'Login',
+                        style:'dashboard.css',
                         errors: errors,
                         populate_fields: entered_fields
                     });            
@@ -208,6 +211,7 @@ router.post('/login',(req,res)=>{
             errors.email.push(error_messages[0]);
             res.render('general/login', {
                 title: 'Login',
+                style:'login.css',
                 errors: errors,
                 populate_fields: entered_fields
             });    

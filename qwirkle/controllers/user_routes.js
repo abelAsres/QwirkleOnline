@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const isAuthenticated = require('../middleware/authenticateUser');
 const isAuthorized = require('../middleware/authorizationUser');
 const userModel = require('../Models/User');
+const loadDashBoard = require('../middleware/authorizationUser');
 
 //dashboard route with verfication middleware
 router.get('/dashboard',isAuthenticated,isAuthorized);
@@ -53,6 +54,7 @@ router.put('/update', (req,res)=>{
         console.log('did not pass validation');
         res.render('/dashboard', {
             title: 'User Page',
+            style:'dashboard.css',
             errors: errors
         });
     } 

@@ -15,25 +15,7 @@ body {
   background-color: #fbf5e1 !important;
 }
 
-#email-label {
-  color: skyblue;
-  font-weight: bold;
-  text-align: left;
-  font-size: x-large;
-  margin-left: 30%;
-  position: relative;
-}
-
 #username-label {
-  color: skyblue;
-  font-weight: bold;
-  text-align: left;
-  font-size: x-large;
-  margin-left: 30%;
-  position: relative;
-}
-
-#verifyPassword-label {
   color: skyblue;
   font-weight: bold;
   text-align: left;
@@ -67,7 +49,7 @@ body {
   border-color: skyblue;
 }
 
-#register {
+.update-button {
   display: inline-block;
   padding: 10px 25px;
   font-size: 24px;
