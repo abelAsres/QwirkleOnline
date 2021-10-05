@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const userModel = require('../Models/User');
 const gameModel = require('../Models/Game');
+const modaljs = require('../public/js/modal')
 
 //Home Route
 router.get('/', (req,res)=>{
@@ -116,7 +117,7 @@ router.post('/registration',(req,res)=>{
         userModel.findOne({email:email},{_id:0,__v:0})
         .then((doc=>{
             if(doc!=null){
-                errors.email.push(error_messages[4])
+                errors.email.push(error_messages[4]);
                 res.render('general/registration',{
                     title:"Registration",
                     style:'registration.css',
@@ -144,7 +145,12 @@ router.post('/registration',(req,res)=>{
                 console.log(user);
                 user.save()
                 .then(()=>{
-                    res.redirect('login');
+                    //res.redirect('login');
+                    res.render('general/login',{
+                        title:"Login",
+                        style: 'login.css',
+                        showModal:true
+                    });
                 })
                 
             }

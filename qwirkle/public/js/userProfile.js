@@ -11,3 +11,4 @@ editProfile.addEventListener('click', function(e) {
     editProfile.innerText='Cancel';
   }
 });
+
