@@ -13,11 +13,20 @@
     - keys.env will be used to store all envirnment varibles (connection strings, usernames, passwords, PORT, etc... )
  6. npm i express-handlebars
  7. npm i express-session --save
+ 8. npm i npm i socket.io
+ 9. 
 */
 
 //Express web server that listens to incoming HTTP requests.
 const express = require('express');
 const app = express();
+
+const http = require('http');
+
+//allow express to handle the HTTP requests.
+const server = http.createServer(app); 
+const { Server } = require("socket.io");
+const io = new Server(server);
 
 const mongoose =require('mongoose'); 
 const exphbs= require('express-handlebars');
@@ -48,6 +57,8 @@ app.use(express.static("public"));
 //load each controller
 const generalController=require("./controllers/general_routes");
 const userController = require("./controllers/user_routes");
+const gameController = require("./controllers/game_routes");
+const { SocketAddress } = require('net');
 
 //
 app.use(session({
@@ -78,6 +89,7 @@ app.use((req,res,next)=>{
 //Map each controller to the app object
 app.use('/', generalController);
 app.use('/user',userController);
+app.use('/game',gameController);
 
 
 //Connect to Database
@@ -87,6 +99,23 @@ mongoose.connect(process.env.MONGO_DB_CONNECT)
 })
 .catch(err=> console.log(`Could not connect to MongoDB: ${err}`));
 
-app.listen(process.env.PORT, () => {
+io.on('connection', function (socket) {
+  console.log('a user connected');
+  console.log(socket.id);
+  req.session.userInfo.socketid=socket.id;
+  socket.on('disconnect', function () {
+    console.log('user disconnected');
+  });
+});
+
+app.use((req,res,next)=>{
+  res.locals.user=req.session.userInfo;
+  
+  console.log(res.locals.user);
+  next();
+});
+
+server.listen(process.env.PORT, () => {
   console.log(`Example app listening at http://localhost:${process.env.PORT}`);
+  console.log(`Example app listening at ${server.address().port}`);
 });

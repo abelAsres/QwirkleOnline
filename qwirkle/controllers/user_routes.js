@@ -70,6 +70,6 @@ router.put('/update', (req,res)=>{
         })
         .catch(err=>console.log(`Error: ${err}`));
     }
-})
+});
 
 module.exports=router;

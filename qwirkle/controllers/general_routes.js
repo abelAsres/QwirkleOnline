@@ -145,12 +145,7 @@ router.post('/registration',(req,res)=>{
                 console.log(user);
                 user.save()
                 .then(()=>{
-                    //res.redirect('login');
-                    res.render('general/login',{
-                        title:"Login",
-                        style: 'login.css',
-                        showModal:true
-                    });
+                    res.redirect('/login?showModal=true');
                 })
                 
             }
@@ -161,9 +156,11 @@ router.post('/registration',(req,res)=>{
 
 //login route
 router.get('/login',(req,res)=>{
+    let showModal = req.query.showModal;
     res.render('general/login',{
         title:"Login",
-        style: 'login.css'
+        style: 'login.css',
+        showModal:showModal
     });
 });
 
