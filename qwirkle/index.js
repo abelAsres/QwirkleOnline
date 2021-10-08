@@ -58,7 +58,6 @@ app.use(express.static("public"));
 const generalController=require("./controllers/general_routes");
 const userController = require("./controllers/user_routes");
 const gameController = require("./controllers/game_routes");
-const { SocketAddress } = require('net');
 
 //
 app.use(session({
@@ -101,18 +100,9 @@ mongoose.connect(process.env.MONGO_DB_CONNECT)
 
 io.on('connection', function (socket) {
   console.log('a user connected');
-  console.log(socket.id);
-  req.session.userInfo.socketid=socket.id;
   socket.on('disconnect', function () {
     console.log('user disconnected');
   });
-});
-
-app.use((req,res,next)=>{
-  res.locals.user=req.session.userInfo;
-  
-  console.log(res.locals.user);
-  next();
 });
 
 server.listen(process.env.PORT, () => {
