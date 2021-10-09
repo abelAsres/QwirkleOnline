@@ -8,10 +8,16 @@
         </div>
         <div class="col-12">
             <h2>Game Invite:</h2>
-            <a id="copy-invite-button" href="http://localhost:3000/game">TestRoom1</a>
+            <a id="copy-invite-button" href="http://localhost:3000/game">{{gameID}}</a>
+        </div>
+        <div>
+            <h2>Player List: </h2>
+            <ul id="player-list">
+
+            </ul>
         </div>
     </div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
-<script>this.socket = io();</script>
 <script src="/js/game.js"></script>

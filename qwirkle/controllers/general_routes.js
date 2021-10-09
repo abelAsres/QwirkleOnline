@@ -23,7 +23,7 @@ router.get('/registration',(req,res)=>{
 
 //registration route
 router.post('/registration',(req,res)=>{
-    console.log('starting registration')
+    //console.log('starting registration')
     const{userName,email,password,checkPassword}=req.body;
 
 
@@ -194,8 +194,8 @@ router.post('/login',(req,res)=>{
     .then((doc=>{
         if(doc!=null){
             const user = new userModel(doc);
-            console.log(user);
-            console.log(doc.password, " ", entered_fields.password);
+            //console.log(user);
+            //console.log(doc.password, " ", entered_fields.password);
             bcrypt.compare(password, doc.password).then((result)=>{
                 if(result){
                     req.session.userInfo = doc;

@@ -25,8 +25,8 @@ const http = require('http');
 
 //allow express to handle the HTTP requests.
 const server = http.createServer(app); 
-const { Server } = require("socket.io");
-const io = new Server(server);
+const Server = require("socket.io");
+const io = Server(server);
 
 const mongoose =require('mongoose'); 
 const exphbs= require('express-handlebars');
@@ -58,6 +58,10 @@ app.use(express.static("public"));
 const generalController=require("./controllers/general_routes");
 const userController = require("./controllers/user_routes");
 const gameController = require("./controllers/game_routes");
+
+// Used to store all current rooms
+const uuid = require("uuid");
+let roomList = [];
 
 //
 app.use(session({
@@ -100,10 +104,40 @@ mongoose.connect(process.env.MONGO_DB_CONNECT)
 
 io.on('connection', function (socket) {
   console.log('a user connected');
+  
+  socket.on('create-room', arg => {
+    // Generate unique ID, and join to room. Return ID to room.
+    let roomID = uuid.v4();
+    
+    socket.join(roomID);
+    roomList.push(roomID);
+
+    io.to(roomID).emit('room-created', roomID);
+  });
+
+  //socket.to().emit();
+
+  // Left to be done: 
+  //  Reject connection if it doesn't exist or 4 players in room.
+  //  Actually update page with proper values.
+  socket.on('join-room', roomID => {
+    // Check that there are less than 4 players
+    let playerCount = io.sockets.adapter.rooms.get(roomID).size;
+    socket.join(roomID);
+
+    io.to(roomID).emit('room-joined', roomID);
+    console.log(`There are ${playerCount} players in the room`);
+  
+    // Update room info.
+
+  });
+
   socket.on('disconnect', function () {
     console.log('user disconnected');
   });
+
 });
+
 
 server.listen(process.env.PORT, () => {
   console.log(`Example app listening at http://localhost:${process.env.PORT}`);
