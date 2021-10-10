@@ -12,7 +12,6 @@ router.get('/join/:id?', (req, res) => {
         title:'Game Page',
         gameID: req.query.id
     });
-
 });
 
 router.get('/',(req,res)=>{
