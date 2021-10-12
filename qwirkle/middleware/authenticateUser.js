@@ -4,7 +4,13 @@ const isLoggedIn=(req,res,next)=>{
         next();
     }else{
         console.log('user is not authenticated');
-        res.redirect("/login");
+        if(req.query.id){
+            console.log('redirect with gameID');
+            res.redirect("/login?gameId="+req.query.id);
+        }
+        else {
+            res.redirect("/login");
+        }
     }
 }
 
