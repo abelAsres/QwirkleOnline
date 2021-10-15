@@ -23,7 +23,7 @@ router.get('/registration',(req,res)=>{
 
 //registration route
 router.post('/registration',(req,res)=>{
-    console.log('starting registration')
+    //console.log('starting registration')
     const{userName,email,password,checkPassword}=req.body;
 
 
@@ -156,11 +156,15 @@ router.post('/registration',(req,res)=>{
 
 //login route
 router.get('/login',(req,res)=>{
+    console.log('get login: '+req.query.gameId);
     let showModal = req.query.showModal;
+    let gameId = req.query.gameId;
+
     res.render('general/login',{
         title:"Login",
         style: 'login.css',
-        showModal:showModal
+        showModal:showModal,
+        gameId: gameId
     });
 });
 
@@ -171,7 +175,8 @@ router.get('/logout',(req,res)=>{
 });
 
 router.post('/login',(req,res)=>{
-    const{email,password}=req.body;
+    console.log(req.body);
+    const{email,password,gameId}=req.body;
     const entered_fields = {
         email:[],
         password:[] 
@@ -194,11 +199,15 @@ router.post('/login',(req,res)=>{
     .then((doc=>{
         if(doc!=null){
             const user = new userModel(doc);
-            console.log(user);
-            console.log(doc.password, " ", entered_fields.password);
+            //console.log(user);
+            //console.log(doc.password, " ", entered_fields.password);
             bcrypt.compare(password, doc.password).then((result)=>{
                 if(result){
                     req.session.userInfo = doc;
+                    console.log('gameID'+req.query.gameId);
+                    if (gameId){
+                        res.redirect('game/join?id='+gameId);
+                    }
                     res.redirect('user/dashboard');
                 }
                 else{

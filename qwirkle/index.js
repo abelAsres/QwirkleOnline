@@ -25,8 +25,8 @@ const http = require('http');
 
 //allow express to handle the HTTP requests.
 const server = http.createServer(app); 
-const { Server } = require("socket.io");
-const io = new Server(server);
+const Server = require("socket.io");
+const io = Server(server);
 
 const mongoose =require('mongoose'); 
 const exphbs= require('express-handlebars');
@@ -43,7 +43,6 @@ app.set('view engine', 'handlebars');
 //load the enviornment varible file
 require('dotenv').config({path:"./config/keys.env"}); 
 
-
 //parse application/x-www-form-urlencoded
 //allows you to use req.body.(property name)
 app.use(bodyParser.urlencoded({extended: false}));
@@ -58,6 +57,12 @@ app.use(express.static("public"));
 const generalController=require("./controllers/general_routes");
 const userController = require("./controllers/user_routes");
 const gameController = require("./controllers/game_routes");
+
+// Used to store all current rooms
+const uuid = require("uuid");
+
+//const room = {playerList: [], playerScore: []}
+//interface roomData {[key: roomID] : room};
 
 //
 app.use(session({
@@ -90,7 +95,6 @@ app.use('/', generalController);
 app.use('/user',userController);
 app.use('/game',gameController);
 
-
 //Connect to Database
 mongoose.connect(process.env.MONGO_DB_CONNECT)
 .then(()=>{
@@ -99,13 +103,62 @@ mongoose.connect(process.env.MONGO_DB_CONNECT)
 .catch(err=> console.log(`Could not connect to MongoDB: ${err}`));
 
 io.on('connection', function (socket) {
-  console.log('a user connected');
-  socket.on('disconnect', function () {
-    console.log('user disconnected');
+  //console.log('a user connected');
+  
+  socket.on('create-room', arg => {
+    // Generate unique ID, and join to room. Return ID to room.
+    let roomID = uuid.v4();
+    
+    socket.join(roomID);
+    //roomData.roomID;
+
+    io.to(roomID).emit('room-created', roomID);
   });
+
+  //socket.to().emit();
+
+  // Left to be done: 
+  //  Reject connection if it doesn't exist or 4 players in room.
+  //  Actually update page with proper values.
+  socket.on('join-room', data => {
+    const {gameID, username} = data;
+    //roomData.roomID
+    // Check that there are less than 4 players
+    const clients = io.sockets.adapter.rooms.get(gameID);
+    let playerCount = clients ? clients.size : 0;
+
+    if (playerCount < 4){
+      socket.join(gameID);
+      playerCount++;
+
+      socket.emit('room-joined', {id: gameID, count: playerCount});
+      //io.to(gameID).emit('room-joined', {id: gameID, count: playerCount});
+      //console.log(`There are ${playerCount} players in the room`);
+      
+      // Query which players are in the current channel. 
+      // Update room info.
+      io.to(gameID).emit('update-player-list', playerCount);
+    }
+    // If more than 4 players don't connect and send him outside.
+    else {
+
+    }
+  });
+
+  socket.on('ready', data =>{
+    const {gameID, playerID} = data
+    //console.log(`Player ${playerID} has pressed Ready`);
+    io.to(gameID).emit('update-player-status', playerID);
+  })
+
+  socket.on('disconnect', function () {
+    //console.log('user disconnected');
+  });
+
 });
+
 
 server.listen(process.env.PORT, () => {
   console.log(`Example app listening at http://localhost:${process.env.PORT}`);
-  console.log(`Example app listening at ${server.address().port}`);
+  //console.log(`Example app listening at ${server.address().port}`);
 });
