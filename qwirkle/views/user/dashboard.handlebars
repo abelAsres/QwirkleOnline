@@ -1,13 +1,13 @@
 <div class="container">
     <div class="row">
         <div class="col" id="title_dashboard">
-            <h1>Dashboard</h1>
+            <span style='color: #ff708e'>D</span><span style='color: #ffac4b'>a</span><span style='color: #f5df68'>s</span><span style='color: #a5ff6f'>h</span><span style='color: #8fccff'>b</span><span style='color: #d18fff'>o</span><span style='color: #ff708e'>a</span><span style='color: #8effe3'>r</span><span style='color: #f0a6ff'>d</span>
         </div>
     </div>
 
    <div class="row">
         <div class="col" id="title_registration">
-            <h2>Welcome Back {{name}}</h2>
+            <h2>Welcome Back, <span>{{name}}</span></h2>
         </div>
     </div>
 
@@ -56,7 +56,7 @@
                 </div--->
                 <div class="form-group row">
                     <div class="col-sm-6">
-                        <button type="submit" class="update-button btn btn-primary">Update Profile</button>
+                        <button type="submit" class="update-button btn btn-outline-success">Update Profile</button>
                     </div>
                 </div>
             </form>
@@ -64,18 +64,18 @@
     </div>
     <div class="row">
         <div class="col">
-            <a class="btn btn-primary" href="#" role="button">Create Game</a>
+            <a class="btn btn-primary" href="#" role="button" id="create">Create Game</a>
         </div>
         <div class="col">
-            <a class="btn btn-primary" href="#" role="button">Join Game</a>
+            <a class="btn btn-primary" href="#" role="button" id="join">Join Game</a>
         </div>
         <div class="col">
             <a class="btn btn-primary" href="#" role="button" id="edit-user-profile">Edit Profile</a>
         </div>
     </div>
     <div class="row">
-        <div class="col" id="games_table">
-            <h2>Your Recent Games</h2>
+        <div class="col" id="games_table" style="padding-top: 4%;">
+            <h2><a href = "#">Recent Games</a></h2>
         </div>
     </div>
 </div>

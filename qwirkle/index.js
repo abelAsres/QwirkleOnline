@@ -51,7 +51,7 @@ const userController = require("./controllers/user_routes");
 
 //
 app.use(session({
-  secret: process.env.SESSION_KEY,
+  secret: process.env.SESSION_KEY || "testsession",
   resave: false,
   saveUninitialized: true,
   //  cookie: { secure: true }
