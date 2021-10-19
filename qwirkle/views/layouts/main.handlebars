@@ -17,10 +17,12 @@
                     <ul class="navbar-nav">
                         {{#if user}}
                         <li class="nav-item">
-                            <a class="nav-link" href="/user/dashboard">Profile</a>
+                            <!-- <a class="nav-link" href="/user/dashboard">Profile</a> -->
+                            <button class="btn btn-outline-success" onclick="location.href='/user/dashboard'" type="button" style="margin-left: 8%;">Profile</button>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link end" href="/logout">Logout</a>
+                            <!-- <a class="nav-link end" href="/logout">Logout</a> -->
+                            <button class="btn btn-outline-success" onclick="location.href='/logout'" type="button" style="margin-left: 15%;">Logout</button>
                         </li>
                         {{/if}}
                     </ul>

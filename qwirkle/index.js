@@ -66,7 +66,7 @@ const uuid = require("uuid");
 
 //
 app.use(session({
-  secret: process.env.SESSION_KEY,
+  secret: process.env.SESSION_KEY || "testsession",
   resave: false,
   saveUninitialized: true,
   //  cookie: { secure: true }

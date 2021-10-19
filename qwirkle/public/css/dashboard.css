@@ -4,6 +4,15 @@
   font-style: normal;
 }
 
+#title_registration span {
+  background-image: linear-gradient(to left, #ffac4b, #f0a6ff, #ff708e, #8fccff, #a5ff6f, #f5df68, #d18fff);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: bold;
+}
+
 #title_dashboard {
   font-family: forte;
   font-size: 120px;
@@ -20,7 +29,7 @@ body {
   font-weight: bold;
   text-align: left;
   font-size: x-large;
-  margin-left: 30%;
+  margin-left: 35%;
   position: relative;
 }
 
@@ -29,7 +38,7 @@ body {
   font-weight: bold;
   text-align: left;
   font-size: x-large;
-  margin-left: 30%;
+  margin-left: 35.5%;
   position: relative;
 }
 
@@ -59,7 +68,7 @@ body {
   font-weight: bold;
   outline: none;
   color: #fff;
-  background-color: skyblue;
+  background-color: #22e629;
   border: none;
   border-radius: 15px;
   align-content: center;
@@ -69,6 +78,84 @@ body {
   margin-top: 2%;
   margin-left: 48%;
   position: static;
+}
+
+#create {
+  display: block;
+  padding: 14px 25px;
+  font-size: 24px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  font-weight: bold;
+  outline: none;
+  color: #fff;
+  background-color: skyblue;
+  border: none;
+  border-radius: 15px; 
+  align-content: center;
+  text-align: center;
+  margin-top: 10%;
+  margin-left: 0%;
+}
+
+#join {
+  display: block;
+  padding: 14px 25px;
+  font-size: 24px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  font-weight: bold;
+  outline: none;
+  color: #fff;
+  background-color: skyblue;
+  border: none;
+  border-radius: 15px; 
+  align-content: center;
+  text-align: center;
+  margin-top: 10%;
+}
+
+#edit-user-profile {
+  display: block;
+  padding: 14px 25px;
+  font-size: 24px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  font-weight: bold;
+  outline: none;
+  color: #fff;
+  background-color: skyblue;
+  border: none;
+  border-radius: 15px; 
+  align-content: center;
+  text-align: center;
+  margin-top: 10%;
+  
+}
+
+#edit-user-profile:hover {
+  background-color: rgb(60, 164, 206);
+}
+
+#create:hover {
+  background-color: rgb(60, 164, 206);
+}
+
+#join:hover {
+  background-color: rgb(60, 164, 206);
+}
+
+#update-profile {
+  padding-left: 15%;
+}
+
+#update-profile .update-button {
+  margin-left: 70%;
+  font-size: large;
+  font-weight: bold;
 }
 
 #register:hover {
