@@ -13,6 +13,7 @@ router.get('/join/:id?'/*,isAuthenticated*/, (req, res) => {
     console.log(`Sending you to room: ${req.query.id}`);
     res.render('game/game',{
         title:'Game Page',
+        style: 'game.css',
         gameID: req.query.id
     });
 });
@@ -31,7 +32,8 @@ router.get('/',/*isAuthenticated,*/(req,res)=>{
     // newDiv.appendChild(newAnchor);
     
     res.render('game/game',{
-        title:'Game Page'
+        title:'Game Page',
+        style: 'game.css'
     });
 });
 
