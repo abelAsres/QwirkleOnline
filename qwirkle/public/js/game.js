@@ -12,13 +12,29 @@ var playerID = name;
 // Temporary variable, will be replaced with username when it becomes available.
 var playerNum;
 
-function CopyToClipboard (containerid) {
+function CopyToClipboard () {
+    /* Get the text field */
+  var copyText = document.getElementById("copy-invite-button");
+
+  /* Select the text field */
+  //copyText.select();
+  //copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+  /* Copy the text inside the text field */
+  navigator.clipboard.writeText(copyText.href);
+  
+  /* Alert the copied text */
+  alert("Copied the text: " + copyText.href);
+    
+    /*
+    const link = document.querySelector('#copy-invite-button');
     var range = document.createRange();
-    range.selectNode(document.getElementById(containerid));
-    window.getSelection().removeAllRanges(range);
+    range.selectNode(link);
+    window.getSelection().removeAllRanges();
     window.getSelection().addRange(range);
     document.execCommand("copy");//method is deprecated need alternative!!!!
     alert("text copied");
+    */
 }
 
 function startGame(){

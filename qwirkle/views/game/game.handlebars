@@ -1,23 +1,21 @@
 <div class="container">
     <div class="row">
-        <div class="col-12">
-            <h1 id="title-gamepage">
-                Game Page
-            </h1>
-            <button onclick="CopyToClipboard('copy-invite-button')">Copy Invite</button>
+        <div class="col-12" id="title-gamepage">
+            <span style='color: #ff708e'>Q</span><span style='color: #ffac4b'>w</span><span style='color: #f5df68'>i</span><span style='color: #a5ff6f'>r</span><span style='color: #8fccff'>k</span><span style='color: #d18fff'>l</span><span style='color: #ff708e'>e</span>
         </div>
+
         <div class="col-12" id="game-app">
 
         </div>
-        <div class="col-12">
-            <h2>Game Invite:</h2>
-            <a id="copy-invite-button" href="">{{gameID}}</a>
+        <div class="col-12" id="gInvite">
+            <h2 style="font-family: Comic Sans MS, Comic Sans, cursive; font-weight: bold; color: green; font-style:italic">Game Invite:</h2>
+            <a id="copy-invite-button" href="">{{user.userName}}'s Game</a><button onclick="CopyToClipboard()" id="copyBtn">Copy Invite</button>
         </div>
-        <div>
-            <h2>Player List: </h2>
+        <div id="gPList">
+            <h2 style="font-family: Comic Sans MS, Comic Sans, cursive; font-weight: bold; color: green; font-style:italic">Player List: </h2>
             <table id="player-table">
                 <tr>
-                    <td id="player-1">Player 1</td>
+                    <td id="player-1"><span>Player 1</span></td>
                     <td id="player-1S">Not Ready</td>
                 </tr>
                 <tr>
@@ -34,12 +32,13 @@
                 </tr>                                
             </table>
         </div>
-        <div>
-            <button onclick="ready()">Ready</button>
-            <button onclick="startGame()">Start Game</button>
+        <div id="startBtns">
+            <button onclick="ready()" id="readyBtn">Ready</button>
+            <button onclick="startGame()" id="startBtn">Start Game</button>
         </div>
     </div>
 </div>
+
 <!--<script src="path/to/pixijs-grid.js"></script>-->
 <script src="https://pixijs.download/release/pixi.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
