@@ -1,0 +1,47 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 id="title-gamepage">
+                Game Page
+            </h1>
+            <button onclick="CopyToClipboard('copy-invite-button')">Copy Invite</button>
+        </div>
+        <div class="col-12" id="game-app">
+
+        </div>
+        <div class="col-12">
+            <h2>Game Invite:</h2>
+            <a id="copy-invite-button" href="">{{gameID}}</a>
+        </div>
+        <div>
+            <h2>Player List: </h2>
+            <table id="player-table">
+                <tr>
+                    <td id="player-1">Player 1</td>
+                    <td id="player-1S">Not Ready</td>
+                </tr>
+                <tr>
+                    <td id="player-2"></td>
+                    <td id="player-2S">No Player</td>
+                </tr>
+                <tr>
+                    <td id="player-3"></td>
+                    <td id="player-3S">No Player</td>
+                </tr>
+                <tr>
+                    <td id="player-4"></td>
+                    <td id="player-4S">No Player</td>
+                </tr>                                
+            </table>
+        </div>
+        <div>
+            <button onclick="ready()">Ready</button>
+            <button onclick="startGame()">Start Game</button>
+        </div>
+    </div>
+</div>
+<!--<script src="path/to/pixijs-grid.js"></script>-->
+<script src="https://pixijs.download/release/pixi.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/game.js"></script>

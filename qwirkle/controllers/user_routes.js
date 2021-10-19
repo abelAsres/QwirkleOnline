@@ -30,7 +30,7 @@ router.put('/update', (req,res)=>{
 
     //check username
     if (!ck_userName.test(userName)){
-        console.log('checking userName');
+        //console.log('checking userName');
         errors.username.push(error_messages[0]);
         passValidation = false;
     }
@@ -51,7 +51,7 @@ router.put('/update', (req,res)=>{
     //check for any errors
     if(!passValidation) {
         
-        console.log('did not pass validation');
+        //console.log('did not pass validation');
         res.render('/dashboard', {
             title: 'User Page',
             style:'dashboard.css',
@@ -70,6 +70,6 @@ router.put('/update', (req,res)=>{
         })
         .catch(err=>console.log(`Error: ${err}`));
     }
-})
+});
 
 module.exports=router;
