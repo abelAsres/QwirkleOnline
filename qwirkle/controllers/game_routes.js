@@ -6,7 +6,6 @@ const isAuthorized = require('../middleware/authorizationUser');
 const userModel = require('../Models/User');
 const loadDashBoard = require('../middleware/authorizationUser');
 
-
 //authentication is turned off for game development
 
 router.get('/join/:id?'/*,isAuthenticated*/, (req, res) => {
@@ -14,7 +13,8 @@ router.get('/join/:id?'/*,isAuthenticated*/, (req, res) => {
     res.render('game/game',{
         title:'Game Page',
         style: 'game.css',
-        gameID: req.query.id
+        gameID: req.query.id,
+        user:req.session.userInfo
     });
 });
 

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router(); 
 const bcrypt = require('bcryptjs');
 const userModel = require('../Models/User');
+const validation = require('../public/js/validation');
 const gameModel = require('../Models/Game');
 const modaljs = require('../public/js/modal')
 
@@ -40,16 +41,14 @@ router.post('/registration',(req,res)=>{
         username:[],
         email:[] 
     }
+    
     const error_messages = ['Invalid username: Please only use alphanumeric characters',
                             'Invalid email',
                             'Invalid password: You can only use alphanumeric characters and (!@$%&*_)',
                             'Password does not match',
                             'This email is already in use'
     ];
-
-    const ck_userName= /^[A-Za-z0-9]{6,12}$/;
-    const ck_password =  /^[A-Za-z0-9!@$%&*_]{8,20}$/;
-    const ck_email = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+    
     let passValidation = true;
     
     //Store submited values to be autofilled if any errors
@@ -63,39 +62,24 @@ router.post('/registration',(req,res)=>{
         entered_fields.email.push(email);
     }
 
-    //check username
-    if (!ck_userName.test(userName)){
-        
-        console.log('checking userName');
-        //document.getElementById('username-error').innerHTML=error_messages[0];
+    if(!validation.validateUserName(userName)){
+        passValidation = false;
         errors.username.push(error_messages[0]);
-        passValidation = false;
     }
-    
-    //check email
-    if (!ck_email.test(email)){
-        
-        console.log('checking email');
-        //document.getElementById('email-error').innerHTML=error_messages[1];
+
+    if(!validation.validateEmail(email)){
+        passValidation = false;
         errors.email.push(error_messages[1]);
-        passValidation = false;
     }
 
-    //check password
-    if (!ck_password.test(password)){
-        
-        console.log('cheking email');
-        //document.getElementById('password-error').innerHTML=error_messages[2];
+    if(!validation.validatePassword(password)){
+        passValidation = false;
         errors.password.push(error_messages[2]);
-        passValidation = false;
     }
 
-    //verify password
-    if (checkPassword.localeCompare(password) != 0) {
-        console.log('verifing password');
-        //document.getElementById('check-password-error').innerHTML=error_messages[3];
-        errors.verifyPassword.push(error_messages[3]);
+    if(!validation.verifyPassword(checkPassword,password)){
         passValidation = false;
+        errors.verifyPassword.push(error_messages[3]);
     }
 
     //check for any errors
@@ -112,7 +96,6 @@ router.post('/registration',(req,res)=>{
     
     if (passValidation) {
         //validation has passed store user to cluster
-        
         console.log('passed validation');
         userModel.findOne({email:email},{_id:0,__v:0})
         .then((doc=>{
