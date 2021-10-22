@@ -9,6 +9,7 @@ on:
     - main
     - development
     - game-lobby
+    - testing-v2
   pull_request:
     branches: 
      - main
