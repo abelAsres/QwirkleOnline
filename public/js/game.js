@@ -7,7 +7,7 @@ const app = new PIXI.Application({width: 600, height: 600});
 const socket = io();
 
 var playerList = [];
-var gameID = document.getElementById('copy-invite-button').innerText;
+let gameID;// = document.getElementById('copy-invite-button').innerText;
 var playerID = name;
 // Temporary variable, will be replaced with username when it becomes available.
 var playerNum;
@@ -45,7 +45,7 @@ function startGame(){
 $(document).ready(function(){
 
     // Check if user came through the create button or joined. 
-    if (gameID == ""){
+    if (gameID == undefined){
         socket.emit('create-room', "");
         UpdatePlayerList(1);
         playerNum = 1;
@@ -64,7 +64,7 @@ socket.on('room-created', id => {
     gameID = id;
 
     //Update fields with generated game room info
-    document.getElementById('copy-invite-button').innerText = gameID;
+    //document.getElementById('copy-invite-button').innerText = gameID;
     document.getElementById('copy-invite-button').href = '/game/join?id=' + gameID;
     
     $("#copy-invite-button").append();
