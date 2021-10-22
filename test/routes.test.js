@@ -23,6 +23,12 @@ test('check login routes', async ()=>{
                         password:"testpassword"
                     });
     expect(response3.statusCode).toBe(401);
+    const response4 = await request.post('/login')
+                    .send({
+                        email:"abelasres",
+                        password:"testpassword"
+                    });
+    console.log(response4);
 })
 
 test('check registration route', async ()=>{
