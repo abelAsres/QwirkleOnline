@@ -195,6 +195,7 @@ router.post('/login',(req,res)=>{
                 }
                 else{
                     errors.password.push(error_messages[1]);
+                    res.statusCode=401;
                     res.render('general/login', {
                         title: 'Login',
                         style:'dashboard.css',
@@ -205,6 +206,7 @@ router.post('/login',(req,res)=>{
             })
         } else {
             errors.email.push(error_messages[0]);
+            res.statusCode=401;
             res.render('general/login', {
                 title: 'Login',
                 style:'login.css',

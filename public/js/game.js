@@ -64,7 +64,7 @@ socket.on('room-created', id => {
     gameID = id;
 
     //Update fields with generated game room info
-    document.getElementById('copy-invite-button').innerText = gameID;
+    //document.getElementById('copy-invite-button').innerText = gameID;
     document.getElementById('copy-invite-button').href = '/game/join?id=' + gameID;
     
     $("#copy-invite-button").append();
