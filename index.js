@@ -19,6 +19,15 @@
 */
 const server = require('./app');
 
+const mongoose =require('mongoose'); 
+
+//Connect to Database
+mongoose.connect(process.env.MONGO_DB_CONNECT)
+.then(()=>{
+    console.log('Connected to MongoDB')
+})
+
+.catch(err=> console.log(`Could not connect to MongoDB: ${err}`));
   server.listen(process.env.PORT, () => {
     console.log(`Example app listening at http://localhost:${process.env.PORT}`);
   });

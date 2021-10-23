@@ -24,7 +24,7 @@
   "scripts": {
     "start": "node index",
     "dev": "nodemon index",
-    "test": "jest"
+    "test": "jest --detectOpenHandles"
   },
   "author": "",
   "license": "ISC"

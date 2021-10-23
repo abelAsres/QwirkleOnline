@@ -9,7 +9,6 @@ const server = http.createServer(app);
 const Server = require("socket.io");
 const io = Server(server);
 
-const mongoose =require('mongoose'); 
 const exphbs= require('express-handlebars');
 
 const bodyParser=require('body-parser');
@@ -76,12 +75,6 @@ app.use('/', generalController);
 app.use('/user',userController);
 app.use('/game',gameController);
 
-//Connect to Database
-mongoose.connect(process.env.MONGO_DB_CONNECT)
-.then(()=>{
-    console.log('Connected to MongoDB')
-})
-.catch(err=> console.log(`Could not connect to MongoDB: ${err}`));
 
 io.on('connection', function (socket) {
   //console.log('a user connected');
