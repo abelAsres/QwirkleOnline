@@ -24,11 +24,7 @@ router.get('/registration',(req,res)=>{
 
 //registration route
 router.post('/registration',(req,res)=>{
-    //console.log('starting registration')
     const{userName,email,password,checkPassword}=req.body;
-
-
-    //TODO: create validation for userName, email and passwords
 
     const errors = {
         username:[],
@@ -125,10 +121,27 @@ router.post('/registration',(req,res)=>{
                     password:password
                 }
                 const user = new userModel(newUser);
-                console.log(user);
                 user.save()
                 .then(()=>{
-                    res.redirect('/login?showModal=true');
+                    const sgMail = require('@sendgrid/mail')
+                    sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+                    const msg = {
+                        to: 'abelasres@gmail.com', // Change to your recipient
+                        from: 'qwirkleonlineteam@gmail.com', // Change to your verified sender
+                        templateId: 'd-d8dc500496a64d77acb2c996cc241e8e',
+                        dynamicTemplateData: {
+                            subject: 'Registration'
+                        },
+                    }
+                    sgMail
+                    .send(msg)
+                    .then(() => {
+                        console.log('Email sent');
+                        res.redirect('/login?showModal=true');
+                    })
+                    .catch((error) => {
+                        console.error(error)
+                    })
                 })
                 
             }
@@ -139,7 +152,6 @@ router.post('/registration',(req,res)=>{
 
 //login route
 router.get('/login',(req,res)=>{
-    console.log('get login: '+req.query.gameId);
     let showModal = req.query.showModal;
     let gameId = req.query.gameId;
 
@@ -182,8 +194,6 @@ router.post('/login',(req,res)=>{
     .then((doc=>{
         if(doc!=null){
             const user = new userModel(doc);
-            //console.log(user);
-            //console.log(doc.password, " ", entered_fields.password);
             bcrypt.compare(password, doc.password).then((result)=>{
                 if(result){
                     req.session.userInfo = doc;

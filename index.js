@@ -16,6 +16,7 @@
  8. npm i npm i socket.io
  9. npm install supertest --save-dev
  10. npm install --save-dev jest
+ 11. npm install --save @sendgrid/mail
 */
 const server = require('./app');
 

@@ -76,17 +76,11 @@ app.use('/user',userController);
 app.use('/game',gameController);
 
 
-io.on('connection', function (socket) {
-  //console.log('a user connected');
-  
+io.on('connection', function (socket) {  
   socket.on('create-room', arg => {
     // Generate unique ID, and join to room. Return ID to room.
-    let roomID = uuid.v4();
-    console.log('ROOMID: '+roomID);
-    
+    let roomID = uuid.v4();    
     socket.join(roomID);
-    //roomData.roomID;
-
     io.to(roomID).emit('room-created', roomID);
   });
 
@@ -108,7 +102,6 @@ io.on('connection', function (socket) {
 
       socket.emit('room-joined', {id: gameID, count: playerCount});
       //io.to(gameID).emit('room-joined', {id: gameID, count: playerCount});
-      //console.log(`There are ${playerCount} players in the room`);
       
       // Query which players are in the current channel. 
       // Update room info.
@@ -122,7 +115,6 @@ io.on('connection', function (socket) {
 
   socket.on('ready', data =>{
     const {gameID, playerID} = data
-    //console.log(`Player ${playerID} has pressed Ready`);
     io.to(gameID).emit('update-player-status', playerID);
   })
 

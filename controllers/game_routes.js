@@ -8,7 +8,7 @@ const loadDashBoard = require('../middleware/authorizationUser');
 
 //authentication is turned off for game development
 
-router.get('/join/:id?'/*,isAuthenticated*/, (req, res) => {
+router.get('/join/:id?',isAuthenticated, (req, res) => {
     console.log(`Sending you to room: ${req.query.id}`);
     res.render('game/game',{
         title:'Game Page',
@@ -18,7 +18,7 @@ router.get('/join/:id?'/*,isAuthenticated*/, (req, res) => {
     });
 });
 
-router.get('/',/*isAuthenticated,*/(req,res)=>{
+router.get('/',isAuthenticated,(req,res)=>{
     //create invitation
     // let newDiv = document.createElement("div");
     // let newAnchor = document.createElement("a");

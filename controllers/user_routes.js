@@ -30,10 +30,11 @@ router.put('/update', (req,res)=>{
 
     //check username
     if (!ck_userName.test(userName)){
-        //console.log('checking userName');
         errors.username.push(error_messages[0]);
         passValidation = false;
     }
+
+    
 
     userModel.findOne({email:req.session.userInfo.email},{_id:0,__v:0})
     .then((doc=>{

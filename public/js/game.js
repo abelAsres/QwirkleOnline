@@ -60,7 +60,6 @@ $(document).ready(function(){
 });
 
 socket.on('room-created', id => {
-    //console.log(`Created room ${id}`);
     gameID = id;
 
     //Update fields with generated game room info

@@ -3,20 +3,42 @@ const mongoose =require('mongoose');
 const supertest = require("supertest");
 const server = require('../app');
 const request = supertest(server);
+const userModel = require('../Models/User');
 
-beforeEach(async ()=>{
-    await mongoose.connect(process.env.MONGO_DB_CONNECT); 
+
+beforeAll(async ()=>{
+    await mongoose.connect('mongodb+srv://abelasrestestDB:WPzy6gaWVlrNriGB@cluster0.5bdmu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'); 
 });
 
-afterEach(()=>{
+afterAll(()=>{
     mongoose.connection.close();
 });
 
+
+//testing home requests
 test('check home route', async ()=>{
     const response =  await request.get('/');
     expect(response.statusCode).toBe(200);
 })
 
+//testing registration requests
+test('check registration route', async ()=>{
+    const response =  await request.get('/registration');
+    expect(response.statusCode).toBe(200);
+
+    await userModel.deleteOne({userName:'testuser1'});
+    const response2 = await request.post('/registration')
+    .send({
+        userName:"testuser1",
+        email:"testmail@gmail.com",
+        password:"testpassword1",
+        checkPassword:"testpassword1"
+    });
+    expect(response2.statusCode).toBe(302);
+    expect(response2.res.headers.location).toBe('/login?showModal=true');
+},60000)
+
+//testing login requests
 test('check login routes', async ()=>{
     const response =  await request.get('/login');
     expect(response.statusCode).toBe(200);
@@ -41,14 +63,19 @@ test('check login routes', async ()=>{
 
      const response5 = await request.post('/login')
                     .send({
-                        email:"abelasres97@gmail.com",
-                        password:"abel1234"
+                        email:"testmail@gmail.com",
+                        password:"testpassword1"
                     });
      expect(response5.statusCode).toBe(302);
      expect(response5.res.headers.location).toBe('user/dashboard');
 },60000)
 
-test('check registration route', async ()=>{
-    const response =  await request.get('/registration');
-    expect(response.statusCode).toBe(200);
+test('update username', async()=>{
+  const response = await request.put('/user/update')
+                .send({
+                    userName: 'testUserUpdated',
+                    password:'testpassword1'
+                });
+    expect(response.statusCode).toBe(204);
+    expect(userModel.findOne({userName: 'testUserUpdated'}).userName).toBe('testUserUpdated');
 })
