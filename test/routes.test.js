@@ -6,11 +6,11 @@ const request = supertest(server);
 const userModel = require('../Models/User');
 
 
-beforeAll(async ()=>{
+beforeEach(async ()=>{
     await mongoose.connect('mongodb+srv://abelasrestestDB:WPzy6gaWVlrNriGB@cluster0.5bdmu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'); 
 });
 
-afterAll(()=>{
+afterEach(()=>{
     mongoose.connection.close();
 });
 
