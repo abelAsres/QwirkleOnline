@@ -23,9 +23,10 @@ jobs:
     strategy:
         max-parallel: 1
         matrix:
-          node-version: [12.x]
-          node-version: [14.x]
-          node-version: [16.x]
+          include: 
+            - node-version: 12.x
+            - node-version: 14.x
+            - node-version: 16.x
           # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
