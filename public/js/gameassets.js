@@ -1,5 +1,5 @@
-//let app = new PIXI.Application({ width: window.innerWidth, height: window.innerHeight });
-//document.body.appendChild(app.view);
+let app = new PIXI.Application({ width: window.innerWidth, height: window.innerHeight });
+document.body.appendChild(app.view);
 
 let button = document.createElement("button");
 button.innerHTML="Draw tile";
