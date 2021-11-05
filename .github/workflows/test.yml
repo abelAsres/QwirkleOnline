@@ -10,6 +10,7 @@ on:
       - development
       - game-lobby
       - testing-v2
+      - testing-v3
   pull_request:
     branches:
       - main
