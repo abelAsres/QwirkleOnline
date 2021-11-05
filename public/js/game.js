@@ -2,8 +2,8 @@
 const express = require('express');
 const pixi = require('pixi.js');
 */
-const app = new PIXI.Application({width: 600, height: 600});
-const grid = new PixiJSGrid(600);
+const app = new PIXI.Application({width: window.innerWidth, height: window.innerHeight});
+const grid = new PixiJSGrid(window.innerWidth,63);
 //const grid = new PixiJSGrid(width).drawGrid();
 const socket = io();
 
