@@ -6,15 +6,14 @@ const request = supertest(server);
 const userModel = require('../Models/User');
 
 
-beforeEach(async ()=>{
+beforeAll(async ()=>{
     await mongoose.connect('mongodb+srv://abelasrestestDB:WPzy6gaWVlrNriGB@cluster0.5bdmu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'); 
 });
 
-afterEach(()=>{
+afterAll(async ()=>{
+    await userModel.deleteOne({userName:'testuser1'});
     mongoose.connection.close();
 });
-
-
 //testing home requests
 test('check home route', async ()=>{
     const response =  await request.get('/');
@@ -26,7 +25,6 @@ test('check registration route', async ()=>{
     const response =  await request.get('/registration');
     expect(response.statusCode).toBe(200);
 
-    await userModel.deleteOne({userName:'testuser1'});
    
     const response2 = await request.post('/registration')
     .send({
