@@ -12,7 +12,8 @@ beforeAll(async ()=>{
 
 afterAll(async ()=>{
     await userModel.deleteOne({userName:'testuser1'});
-    mongoose.connection.close();
+    await mongoose.connection.close();
+    
 });
 //testing home requests
 test('check home route', async ()=>{
@@ -33,8 +34,14 @@ test('check registration route', async ()=>{
         password:"testpassword1",
         checkPassword:"testpassword1"
     });
-    expect(response2.statusCode).toBe(302);
-    expect(response2.res.headers.location).toBe('/login?showModal=true');
+
+    const user =  await userModel.findOne({email:"testmail@gmail.com"});
+
+    expect(user.userName).toBe('testuser1');
+    expect(user.email).toBe('testmail@gmail.com');
+    //expect(response2.statusCode).toBe(200);
+    //expect(response2.res.headers.location).toBe('/login?showModal=true');
+
 },60000)
 
 //testing login requests
