@@ -26,6 +26,7 @@ test('check registration route', async ()=>{
     const response =  await request.get('/registration');
     expect(response.statusCode).toBe(200);
 
+    await userModel.deleteOne({userName:'testuser1'});
    
     const response2 = await request.post('/registration')
     .send({
@@ -34,7 +35,7 @@ test('check registration route', async ()=>{
         password:"testpassword1",
         checkPassword:"testpassword1"
     });
-    expect(response2.statusCode).toBe(200);
+    expect(response2.statusCode).toBe(302);
     expect(response2.res.headers.location).toBe('/login?showModal=true');
 },60000)
 
@@ -68,7 +69,7 @@ test('check login routes', async ()=>{
                     });
      expect(response5.statusCode).toBe(302);
      expect(response5.res.headers.location).toBe('user/dashboard');
-     await userModel.deleteOne({userName:'testuser1'});
+     
 },60000)
 /*
 test('update username', async()=>{
