@@ -1,4 +1,10 @@
 const isLoggedIn=(req,res,next)=>{
+    
+    /* Validation is auto true for testing
+    console.log('user authenticated');
+    next();
+    */
+    
     if (req.session.userInfo){
         console.log('user authenticated');
         next();
@@ -12,6 +18,7 @@ const isLoggedIn=(req,res,next)=>{
             res.redirect("/login");
         }
     }
+    
 }
 
 module.exports=isLoggedIn;

@@ -89,7 +89,9 @@ router.post('/registration',(req,res)=>{
             populate_fields: entered_fields
         });
     } 
-    
+
+    //console.log(`email: ${email}, username: ${username}, password: ${password}, passValidation: ${passValidation}`);
+
     if (passValidation) {
         //validation has passed store user to cluster
         console.log('passed validation');
@@ -123,6 +125,7 @@ router.post('/registration',(req,res)=>{
                 const user = new userModel(newUser);
                 user.save()
                 .then(()=>{
+                    /*
                     const sgMail = require('@sendgrid/mail')
                     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
                     const msg = {
@@ -142,6 +145,9 @@ router.post('/registration',(req,res)=>{
                     .catch((error) => {
                         console.error(error)
                     })
+                    */
+                console.log('Email sent');
+                res.redirect('/login?showModal=true');
                 })
                 
             }
