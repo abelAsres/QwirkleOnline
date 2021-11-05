@@ -1,3 +1,2 @@
-qwirkle/config/keys.env
+config/keys.env
 node_modules
-package-lock.json

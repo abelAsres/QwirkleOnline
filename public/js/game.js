@@ -3,6 +3,7 @@ const express = require('express');
 const pixi = require('pixi.js');
 */
 const app = new PIXI.Application({width: 600, height: 600});
+const grid = new PixiJSGrid(600);
 //const grid = new PixiJSGrid(width).drawGrid();
 const socket = io();
 
@@ -55,12 +56,14 @@ $(document).ready(function(){
     else {
         socket.emit('join-room', {gameID: gameID, username: 'username'});
     }
+
     $("#game-app").append(app.view);
-    $("#game-app").append("<h1>Hello World. Why is the game not here?</h1>");
+
+    grid.drawGrid();
+    app.stage.addChild(grid);
 });
 
 socket.on('room-created', id => {
-    //console.log(`Created room ${id}`);
     gameID = id;
 
     //Update fields with generated game room info
