@@ -20,21 +20,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-<<<<<<< HEAD
-      matrix:
         - node-version: [12.x]
-=======
-      max-parallel: 1
-<<<<<<< HEAD
-    matrix:
-        - node-version: [12.x, 14.x, 16.x]
->>>>>>> 10ce2a7723da639c28b1bc6ba5660d3adeba9e9f
-=======
-      matrix:
-        - node-version: 12.x
-        - node-version: 14.x
-        - node-version: 16.x
->>>>>>> acd32f4b2e48a8fa92146c2d59684ac6c7bf067f
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
