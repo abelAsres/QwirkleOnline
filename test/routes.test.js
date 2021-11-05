@@ -34,6 +34,10 @@ test('check registration route', async ()=>{
         password:"testpassword1",
         checkPassword:"testpassword1"
     });
+<<<<<<< HEAD
+    expect(response2.statusCode).toBeGreaterThanOrEqual(200);
+    expect(response2.res.headers.location).toBe('/login?showModal=true');
+=======
 
     const user =  await userModel.findOne({email:"testmail@gmail.com"});
 
@@ -42,6 +46,7 @@ test('check registration route', async ()=>{
     //expect(response2.statusCode).toBe(200);
     //expect(response2.res.headers.location).toBe('/login?showModal=true');
 
+>>>>>>> 361eb4d088ca380770bf67f266306522e59bc9e9
 },60000)
 
 //testing login requests
