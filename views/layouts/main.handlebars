@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Qwirkle | {{title}}</title>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="/css/{{style}}">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+        <link rel="shortcut icon" href="#" />
+    </head>
+    <body>
+        <header>
+            <nav class="navbar navbar-expand-lg">
+                    <button class="btn btn-outline-success" onclick="location.href='/'" type="button" style="margin-left: 1%;">Home</button>
+                    <ul class="navbar-nav">
+                        {{#if user}}
+                        <li class="nav-item">
+                            <!-- <a class="nav-link" href="/user/dashboard">Profile</a> -->
+                            <button class="btn btn-outline-success" onclick="location.href='/user/dashboard'" type="button" style="margin-left: 8%;">Profile</button>
+                        </li>
+                        <li class="nav-item">
+                            <!-- <a class="nav-link end" href="/logout">Logout</a> -->
+                            <button class="btn btn-outline-success" onclick="location.href='/logout'" type="button" style="margin-left: 15%;">Logout</button>
+                        </li>
+                        {{/if}}
+                    </ul>
+                </nav>
+        </header>
+        
+        {{{ body }}}
+
+        <!-- Option 1: Bootstrap Bundle with Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+    </body>
+</html>
