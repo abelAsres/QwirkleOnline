@@ -6,9 +6,22 @@ button.innerHTML="Draw tile";
 button.onclick= "getTileAtRandom()";
 document.body.appendChild(button);
 const container = new PIXI.Container();
+
+const tiletest = {
+    11: "Yellow Circle", 12: "Blue Circle", 13: "Red Circle", 14: "Orange Circle", 15: "Purple Circle", 16: "Green Circle",
+    21: "Yellow Cross", 22: "Blue Cross", 23: "Red Cross", 24: "Orange Cross", 25: "Purple Cross", 26: "Green Cross",
+    31: "Yellow Diamond", 32: "Blue Diamond", 33: "Red Diamond", 34: "Orange Diamond", 35: "Purple Diamond", 36: "Green Diamond",
+    41: "Yellow Square", 42: "Blue Square", 43: "Red Square", 44: "Orange Square", 45: "Purple Square", 46: "Green Square",
+    51: "Yellow Star", 52: "Blue Star", 53: "Red Star", 54: "Orange Star", 55: "Purple Star", 56: "Green Star",
+    61: "Yellow Triangle", 62: "Blue Triangle", 63: "Red Triangle", 64: "Orange Triangle", 65: "Purple Triangle", 66: "Green Triangle"
+}
+
+const culorsEnum = [];
+
+const colors = ['Yellow','Blue','Red','Orange','Purple','Green'];
+const shapes = ['Circle','Cross','Diamond','Square','Star','Triangle'];
+
 //app.stage.addChild(container);
-
-
 
 /*app.ticker.add(delta=> loop(delta));
 
@@ -165,7 +178,7 @@ function getTileAtRandom(){
         ,'images/trianglespritesheet.json'
     ];
 
-    console.log(`ColorIdx: ${colorIdx} ShapeIdx: ${shapeIdx},${shapesTileSheet[shapeIdx]}`);
+    //console.log(`ColorIdx: ${colorIdx} ShapeIdx: ${shapeIdx},${shapesTileSheet[shapeIdx]}`);
     
     if (checkTileAvailablity(shapes[shapeIdx].toLowerCase(),colors[colorIdx].toLowerCase())) {
         loader.add(shapesTileSheet[shapeIdx]);
@@ -179,7 +192,10 @@ function getTileAtRandom(){
 function drawTile (loader, resources) {
     console.log(resources);
     tileTracker[selectedShape.toLowerCase()][selectedColor.toLowerCase()] += 1;
-    console.log('tileTRACKER: '+tileTracker[selectedShape.toLowerCase()][selectedColor.toLowerCase()]);
+    //console.log('tileTRACKER: '+tileTracker[selectedShape.toLowerCase()][selectedColor.toLowerCase()]);
+    console.log(selectedShape + " " + selectedColor);
+    drawTile2(0);
+
     const texture = PIXI.Texture.from(`${selectedShape}${selectedColor}Tile.png`);
     const sprite = new PIXI.Sprite(texture);
 
@@ -198,6 +214,7 @@ function drawTile (loader, resources) {
     app.stage.addChild(sprite);
     loader.reset();
 }
+
 
 function checkTileAvailablity(shape,color){
     return tileTracker[shape][color] < 3;

@@ -43,6 +43,8 @@ const uuid = require("uuid");
 
 //const room = {playerList: [], playerScore: []}
 //interface roomData {[key: roomID] : room};
+const Qwirkle = require("./game/qwirkle")
+const rList = {};
 
 //
 app.use(session({
@@ -75,12 +77,13 @@ app.use('/', generalController);
 app.use('/user',userController);
 app.use('/game',gameController);
 
-
 io.on('connection', function (socket) {  
-  socket.on('create-room', arg => {
+  socket.on('create-room', username => {
     // Generate unique ID, and join to room. Return ID to room.
-    let roomID = uuid.v4();    
+    let roomID = uuid.v4().replace(/-/g, '');
     socket.join(roomID);
+
+    rList[roomID] = new Qwirkle(username);
     io.to(roomID).emit('room-created', roomID);
   });
 
@@ -114,12 +117,36 @@ io.on('connection', function (socket) {
   });
 
   socket.on('ready', data =>{
-    const {gameID, playerID} = data
+    const {gameID, playerID} = data;
     io.to(gameID).emit('update-player-status', playerID);
+  });
+
+  socket.on('start-game', data =>{
+    const {gameID, playerID} = data;
+    rList[gameID].startGame();
+    console.log(rList[gameID].players);
+
+    for (let i in rList[gameID].players){
+      console.log("Player ID: " + playerID);
+      console.log(i + ": " + rList[gameID].players[i]);
+
+      let tileArray = [];
+      for (let j = 0; j < 6; j++){
+        tileArray.push(rList[gameID].dealTile());
+      }
+      io.to(gameID).emit('draw-tile', {target: rList[gameID].players[i], tileArray: tileArray});
+    }
+    
   })
 
   socket.on('disconnect', function () {
     //console.log('user disconnected');
+  });
+
+  socket.on('deal-tile', data =>{
+    const {gameID, playerID} = data
+    io.to(gameID).emit('deal-tile', {playerID});
+
   });
 
 });

@@ -1,15 +1,12 @@
-/*
-const express = require('express');
-const pixi = require('pixi.js');
-*/
-const app = new PIXI.Application({width: window.innerWidth, height: window.innerHeight});
-const grid = new PixiJSGrid(window.innerWidth,63);
-//const grid = new PixiJSGrid(width).drawGrid();
+
+/*width: window.innerWidth, height: window.innerHeight*/
+const app = new PIXI.Application({width: 760, height: 760, backgroundColor: 0xFFFFFF});
+const grid = new PixiJSGrid(630, 63);
 const socket = io();
 
 var playerList = [];
 let gameID;// = document.getElementById('copy-invite-button').innerText;
-var playerID = name;
+var playerID = "";
 // Temporary variable, will be replaced with username when it becomes available.
 var playerNum;
 
@@ -38,27 +35,25 @@ function CopyToClipboard () {
     */
 }
 
-function startGame(){
-    console.log('Start game has been pressed');
-}
-
-
 $(document).ready(function(){
+    playerID = document.getElementById('userName').innerText;
+    gameID = document.getElementById('gameID').innerText;
 
     // Check if user came through the create button or joined. 
-    if (gameID == undefined){
-        socket.emit('create-room', "");
+    if (gameID == undefined || gameID == ""){
+        socket.emit('create-room', playerID);
         UpdatePlayerList(1);
         playerNum = 1;
     }
     // When the else fires. Client will emit a request that adds them to the room. 
     // The server will respond with an emit to all current players updating player list 
     else {
-        socket.emit('join-room', {gameID: gameID, username: 'username'});
+        socket.emit('join-room', {gameID: gameID, username: playerID});
     }
 
+    // Draw and display the Grid (PixiJS App).
     $("#game-app").append(app.view);
-
+    grid.lineStyle({width: 1, color: 0x000000 })
     grid.drawGrid();
     app.stage.addChild(grid);
 });
@@ -72,7 +67,7 @@ socket.on('room-created', id => {
     
     $("#copy-invite-button").append();
 
-    console.log(`Player ${playerNum} has joined game #${gameID}`);
+    console.log(`Player ${playerID} has created game #${gameID}`);
 });
 
 // Should update page info to reflect current status.
@@ -83,6 +78,12 @@ socket.on('room-joined', (data) => {
 
     console.log(`Player ${playerNum} has joined game #${gameID}`);
 });
+
+function startGame(){
+    console.log('Start game has been pressed');
+    socket.emit('start-game', {gameID: gameID, playerID: playerID});
+
+}
 
 //
 socket.on('update-player-list', count =>{
@@ -97,6 +98,14 @@ function ready(){
 socket.on('update-player-status', playerNum =>{
     console.log(`Player ${playerNum} is ready`);
     $("#player-" + playerNum + "S").replaceWith("<td id=&quot;player-"+ playerNum + "S&quot;>Ready</td>");
+});
+
+socket.on('draw-tile', data =>{
+    const {target, tileArray} = data; 
+
+    if (playerID == target){
+        getTile(tileArray);
+    }
 });
 
 // Currently incomplete
@@ -247,27 +256,39 @@ let tileTracker = {
     totalInPlay:0
 }
 
-let selectedColor;
-let selectedShape;
+let selectedColor = [];
+let selectedShape = [];
+const colors = ['Yellow','Blue','Red','Orange','Purple','Green'];
+const shapes = ['Circle','Cross','Diamond','Square','Star','Triangle'];
+
+function getTile(tileArray){
+    for (let i in tileArray){
+        selectedShape.push(tileArray[i] % 10);
+        selectedColor.push(Math.floor(tileArray[i] / 10));
+    }
+
+    for (let i = 0; i < 6; i++){
+        loader.add(shapesTileSheet[i]);
+    }
+    loader.load(drawTile);
+    console.log('Colors: ' + selectedColor);
+
+    /*
+    let shapeIDX = tileENUM % 10;
+    console.log(shapeIDX);
+    selectedColor = colors[Math.floor(tileENUM / 10)];
+    selectedShape = shapes[shapeIDX];
+
+    loader.add(shapesTileSheet[shapeIDX]);
+    */
+}
 
 function getTileAtRandom(){
-    const colors = ['Yellow','Blue','Red','Orange','Purple','Green'];
-    const shapes = ['Circle','Cross','Diamond','Square','Star','Triangle'];
-
     let colorIdx = Math.floor(Math.random() * 5);
     let shapeIdx = Math.floor(Math.random() * 5);
 
     selectedColor = colors[colorIdx];
     selectedShape = shapes[shapeIdx];
-
-    const shapesTileSheet = [
-        'images/circlespritesheet.json'
-        ,'images/crossspritesheet.json'
-        ,'images/diamondspritesheet.json'
-        ,'images/squarespritesheet.json'
-        ,'images/starspritesheet.json'
-        ,'images/trianglespritesheet.json'
-    ];
 
     console.log(`ColorIdx: ${colorIdx} ShapeIdx: ${shapeIdx},${shapesTileSheet[shapeIdx]}`);
     
@@ -282,8 +303,28 @@ function getTileAtRandom(){
 
 function drawTile (loader, resources) {
     console.log(resources);
-    tileTracker[selectedShape.toLowerCase()][selectedColor.toLowerCase()] += 1;
-    console.log('tileTRACKER: '+tileTracker[selectedShape.toLowerCase()][selectedColor.toLowerCase()]);
+    
+    for (let i in selectedColor){
+        let texture = PIXI.Texture.from(`${shapes[selectedShape[i]]}${colors[selectedColor[i]]}Tile.png`);
+        let sprite = new PIXI.Sprite(texture);
+
+        sprite.position.set(xPosition,yPositon);
+        xPosition+=63;
+
+        sprite.interactive = true; 
+        sprite.buttonMode = true; 
+        sprite.anchor.set = 0.5; 
+    
+        sprite.on('pointerdown', onDragStart)
+        .on('pointerup', onDragEnd)
+        .on('pointerupoutside', onDragEnd)
+        .on('pointermove', onDragMove);
+    
+        app.stage.addChild(sprite);
+    }
+    loader.reset();
+
+    /*
     const texture = PIXI.Texture.from(`${selectedShape}${selectedColor}Tile.png`);
     const sprite = new PIXI.Sprite(texture);
 
@@ -301,6 +342,13 @@ function drawTile (loader, resources) {
 
     app.stage.addChild(sprite);
     loader.reset();
+    */
+    /*
+    for (let i = 0; i < 56; i++){
+        if (i%10 < 7)
+            drawTile2(i);
+    }
+    */
 }
 
 function checkTileAvailablity(shape,color){
@@ -309,6 +357,13 @@ function checkTileAvailablity(shape,color){
 
 function allTilesInPlay(){
     return tileTracker.totalInPlay == 108;
+}
+
+function drawTile2 (tileNum) {
+    selectedColor = colors[Math.floor(tileNum/10)];
+    selectedShape = shapes[tileNum%10];
+    
+    console.log("DrawTile2: " + selectedColor + " " + selectedShape);
 }
 
 // throughout the process multiple signals can be dispatched.
