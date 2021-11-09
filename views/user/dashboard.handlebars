@@ -1,0 +1,83 @@
+<div class="container">
+    <div class="row">
+        <div class="col" id="title_dashboard">
+            <span style='color: #ff708e'>D</span><span style='color: #ffac4b'>a</span><span style='color: #f5df68'>s</span><span style='color: #a5ff6f'>h</span><span style='color: #8fccff'>b</span><span style='color: #d18fff'>o</span><span style='color: #ff708e'>a</span><span style='color: #8effe3'>r</span><span style='color: #f0a6ff'>d</span>
+        </div>
+    </div>
+
+   <div class="row">
+        <div class="col" id="title_registration">
+            <h2>Welcome Back, <span>{{name}}</span></h2>
+        </div>
+    </div>
+
+    <div class="row" id="update-profile" style="display: none;">
+        <div class="col">
+            <form method="POST" action="/user/update?method=PUT">
+                <div class="form-group row">
+                    <label for="inputUsername" class="col-sm-2 col-form-label" id="username-label">User Name</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inputUsername" name="userName" placeholder="Username" required value={{user.userName}}>
+                        <small id="passwordHelpBlock" class="form-text text-muted">
+                            Your username must be 6-12 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
+                        </small>
+                        {{#if errors.username}}<div class="text-danger" id="username-error">{{errors.username}}</div>{{/if}}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-2 col-form-label" id="password-label">Password</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Password" required>
+                        <small id="passwordHelpBlock" class="form-text text-muted">
+                            Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
+                        </small>
+                        {{#if errors.password}}<div class="text-danger" id="password-error">{{errors.password}}</div>{{/if}}
+                    </div>
+                </div>
+                <!---div class="form-group row">
+                    <label for="inputPassword" class="col-sm-2 col-form-label">New Password</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control" id="inputNewPassword" name="newPassword" placeholder="Password" required>
+                        <small id="passwordHelpBlock" class="form-text text-muted">
+                            Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
+                        </small>
+                        {{#if errors.newPassword}}<div class="text-danger" id="password-error">{{errors.newPassword}}</div>{{/if}}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="verfiyPassword" class="col-sm-2 col-form-label">Verify Password</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control" id="verfiyPassword" name="checkPassword" placeholder="Verify Password" required>
+                        <small id="verifyPasswordHelpBlock" class="form-text text-muted">
+                            Please re-enter your password for verfication
+                        </small>
+                        {{#if errors.verifyPassword}}<div class="text-danger" id="check-password-error">{{errors.verifyPassword}}</div>{{/if}}
+                    </div>
+                </div--->
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <button type="submit" class="update-button btn btn-outline-success">Update Profile</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-primary" href="/game" role="button" id="create">Create Game</a>
+        </div>
+        <div class="col">
+            <a class="btn btn-primary" href="#" role="button" id="join">Join Game</a>
+        </div>
+        <div class="col">
+            <a class="btn btn-primary" href="#" role="button" id="edit-user-profile">Edit Profile</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col" id="games_table" style="padding-top: 4%;">
+            <h2><a href = "#">Recent Games</a></h2>
+        </div>
+    </div>
+</div>
+
+<script src="/js/userProfile.js"></script>
