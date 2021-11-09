@@ -14,3 +14,8 @@
 ## 2021-10-18
 
 ### Added
+
+
+## 2021-11-05
+- Fixed: Test.yml runs tests sequentially now. 
+

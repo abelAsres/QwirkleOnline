@@ -194,6 +194,7 @@ class PixiJSGrid extends PIXI.Graphics {
   drawGrid() {
     console.log("Drawing Grid");
     this.clearGrid(true);
+    console.log(this.amtLines);
     for (let i = (this._drawBoundaries ? 0 : 1); i <= this.amtLines - (this._drawBoundaries ? 0 : 1); i += 1) {
       const startCoord = i * this._cellSize;
 
@@ -262,7 +263,8 @@ class PixiJSGrid extends PIXI.Graphics {
     if (!this._useCorrectedWidth) {
       this._correctedWidth = this._gridWidth;
     }
+      this._correctedWidth = this._gridWidth;
 
-    this._correctedWidth = Math.ceil(Math.sqrt(this._gridWidth)) ** 2;
+    //this._correctedWidth = Math.ceil(Math.sqrt(this._gridWidth)) ** 2;
   }
 }

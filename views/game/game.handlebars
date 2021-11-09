@@ -4,6 +4,11 @@
             <span style='color: #ff708e'>Q</span><span style='color: #ffac4b'>w</span><span style='color: #f5df68'>i</span><span style='color: #a5ff6f'>r</span><span style='color: #8fccff'>k</span><span style='color: #d18fff'>l</span><span style='color: #ff708e'>e</span>
         </div>
 
+        <div style="display: none;">
+            <p id="userName">{{user.userName}}</p>
+            <p id="gameID">{{gameID}}</p>
+        </div>
+
         <div class="col-12" id="game-app">
 
         </div>
@@ -35,6 +40,7 @@
         <div id="startBtns">
             <button onclick="ready()" id="readyBtn">Ready</button>
             <button onclick="startGame()" id="startBtn">Start Game</button>
+            <button onclick="getTileAtRandom()">Get Tile</button>>
         </div>
     </div>
 </div>
