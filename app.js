@@ -121,23 +121,41 @@ io.on('connection', function (socket) {
     io.to(gameID).emit('update-player-status', playerID);
   });
 
+  // Implement Unready
+
   socket.on('start-game', data =>{
     const {gameID, playerID} = data;
-    rList[gameID].startGame();
-    console.log(rList[gameID].players);
-
+    // Add check for readiness later
+    let allPlayersReady = true;
     for (let i in rList[gameID].players){
-      console.log("Player ID: " + playerID);
-      console.log(i + ": " + rList[gameID].players[i]);
-
-      let tileArray = [];
-      for (let j = 0; j < 6; j++){
-        tileArray.push(rList[gameID].dealTile());
-      }
-      io.to(gameID).emit('draw-tile', {target: rList[gameID].players[i], tileArray: tileArray});
+      io.to(gameID).emit('test');
     }
     
+    if (!rList[gameID].start){
+      rList[gameID].startGame();
+      console.log(rList[gameID].players);
+      
+      io.to(gameID).emit('init-scoreboard');
+
+      for (let i in rList[gameID].players){
+        console.log("Player ID: " + playerID);
+        console.log(i + ": " + rList[gameID].players[i]);
+
+        let tileArray = [];
+        for (let j = 0; j < 6; j++){
+          tileArray.push(rList[gameID].dealTile());
+        }
+        io.to(gameID).emit('draw-tile', {target: rList[gameID].players[i], tileArray: tileArray});
+      }
+    }
   })
+
+  socket.on('play-tile', data =>{
+    const {gameID, tile, coord} = data;
+    const {x, y} = coord;
+    rList[gameID].playTile(tile, x, y);
+
+  });
 
   socket.on('disconnect', function () {
     //console.log('user disconnected');

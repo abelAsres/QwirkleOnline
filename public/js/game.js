@@ -9,6 +9,7 @@ let gameID;// = document.getElementById('copy-invite-button').innerText;
 var playerID = "";
 // Temporary variable, will be replaced with username when it becomes available.
 var playerNum;
+let playerStatus = false;
 
 function CopyToClipboard () {
     /* Get the text field */
@@ -56,7 +57,7 @@ $(document).ready(function(){
     grid.lineStyle({width: 1, color: 0x000000 })
     grid.drawGrid();
     app.stage.addChild(grid);
-});
+    });
 
 socket.on('room-created', id => {
     gameID = id;
@@ -79,9 +80,29 @@ socket.on('room-joined', (data) => {
     console.log(`Player ${playerNum} has joined game #${gameID}`);
 });
 
+socket.on('start-game', (data) => {
+    startGame2();
+});
+
+socket.on('ready-status', (data) => {
+
+})
+
 function startGame(){
     console.log('Start game has been pressed');
     socket.emit('start-game', {gameID: gameID, playerID: playerID});
+    grid.on('mousedown', (evt) => {
+        const mouseCoords = evt.data.global;
+        // check if the mouse is within the bounds of this grid. If not, do nothing.
+        if (mouseCoords.x >= grid.bounds.x1 && mouseCoords.x <= grid.bounds.x2 && mouseCoords.y >= grid.bounds.y1 && mouseCoords.y <= grid.bounds.y2) {
+          let gridCoords = grid.getCellCoordinates(mouseCoords.x, mouseCoords.y);
+          socket.emit('play-tile', {gameID, tile: 1, coord: gridCoords});
+          //grid.onMouseDown(evt, gridCoords);
+        }
+    });
+}
+
+function startGame2(){
 
 }
 
@@ -91,14 +112,27 @@ socket.on('update-player-list', count =>{
 })
 
 function ready(){
-    console.log('Ready has been pressed');
-    socket.emit('ready', {gameID: gameID, playerID: playerNum});
+    if (playerStatus){
+        playerStatus = false;
+        
+        socket.emit('unready', {gameID: gameID, playerID: playerNum});
+    }
+    else {
+        playerStatus = true;
+        socket.emit('ready', {gameID: gameID, playerID: playerNum});
+    }
 }
 
 socket.on('update-player-status', playerNum =>{
     console.log(`Player ${playerNum} is ready`);
     $("#player-" + playerNum + "S").replaceWith("<td id=&quot;player-"+ playerNum + "S&quot;>Ready</td>");
 });
+
+socket.on('init-scoreboard', (count) => {
+    for (let i = 1; i <= count; i++){
+        $("#player-" + i + "S").replaceWith("<td id=player-"+ i + "S>0</td>");
+    }
+})
 
 socket.on('draw-tile', data =>{
     const {target, tileArray} = data; 
@@ -144,7 +178,7 @@ const shapesTileSheet = [
     ,'images/trianglespritesheet.json'
 ];
 
-let yPositon = 0;
+let yPositon = 650;
 let xPosition = 0;
 
 /*
