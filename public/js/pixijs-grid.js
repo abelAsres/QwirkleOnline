@@ -1,9 +1,8 @@
 'use strict';
 
-/**
+/*
  * @author: Luis Angel Garcia
- */
-/** */
+*/
 const DEFAULT_LINE_STYLE = {
   width: 1,
   color: 0xffffff,
@@ -141,13 +140,7 @@ class PixiJSGrid extends PIXI.Graphics {
     * If **true**, the grid will draw its boundaries.
     * Otherwise, the grid will not draw its boundaries. Mouse pointer detection is not affected.
    */
-  constructor(
-    width,
-    cellSize=null,
-    lineConfig = null,
-    useCorrectedWidth = true,
-    drawBoundaries = true,
-  ) {
+  constructor(width, cellSize=null, lineConfig = null, useCorrectedWidth = true, drawBoundaries = true) {
     super();
 
     this._cellSize = null;
@@ -163,16 +156,14 @@ class PixiJSGrid extends PIXI.Graphics {
     this.cellSize = cellSize;
     
     const lConfig = { ...DEFAULT_LINE_STYLE, ...(lineConfig || {} )};
-    this.lineStyle(
-      lConfig.width,
-      lConfig.color,
-      lConfig.alpha,
-      lConfig.alignment,
-      lConfig.native
-    );
+    this.lineStyle(lConfig.width, lConfig.color, lConfig.alpha, lConfig.alignment, lConfig.native);
 
     // handle mouse move
+    this.hitArea = new PIXI.Rectangle(0, 0, width, width);
     this.interactive = true;
+
+
+    /*
     this.on('mousemove', (evt) => {
       const mouseCoords = evt.data.global;
       // check if the mouse is within the bounds of this grid. If not, do nothing.
@@ -186,6 +177,8 @@ class PixiJSGrid extends PIXI.Graphics {
         this.onMousemove(evt, gridCoords);
       }
     });
+    */
+
   }
   
   /**
@@ -253,8 +246,9 @@ class PixiJSGrid extends PIXI.Graphics {
    * @param {{x: number, y: number}} gridCoords
    * The grid-level coordinates captured by the event.
    */
-  onMousemove(evt, gridCoords) {}
-
+  onMousemove(evt, gridCoords) {
+    //console.log(evt + ". " + gridCoords);
+  }
   /**
    * Calculates the corrected width. If the `useCorrectedWidth` constructor parameter is set to **false**,
    * then it simply keeps the given value for `width` as the corrected width.
