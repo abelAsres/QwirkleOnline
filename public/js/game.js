@@ -214,6 +214,46 @@ function setup(loader,resources){
 }
 */
 
+let line;
+function showSelection(c1,c2){
+    line = new PIXI.Graphics();
+    line.lineStyle(5,0xFFEA00,1)
+    .moveTo(c1,c2)
+    .lineTo(c1,c2+63)
+    .moveTo(c1,c2)
+    .lineTo(c1+63,c2)
+    .moveTo(c1,c2+63)
+    .lineTo(c1+63,c2+63)
+    .moveTo(c1+63,c2+63)
+    .lineTo(c1+63,c2);
+    app.stage.addChild(line);
+}
+
+let selectedTile = PIXI.Sprite();
+
+function tileClicked(event){
+    app.stage.removeChild(line);
+    showSelection(this.x,this.y);
+    this.data = event.data;
+    console.log(this);
+    selectedTile = this;
+    app.stage.interactive = true;
+    selectedTile.alpha = 0.5;
+    grid.on('mousedown',moveSelectedTile);
+
+}
+
+function moveSelectedTile(e){
+    let pos = e.data.global;
+    selectedTile.x = pos.x;
+    selectedTile.y = pos.y;
+    app.stage.removeChild(line);
+    selectedTile.alpha = 1;
+    selectedTile = PIXI.Sprite();
+
+}
+
+
 function onDragStart(event) {
     // store a reference to the data
     // the reason for this is because of multitouch
@@ -348,11 +388,13 @@ function drawTile (loader, resources) {
         sprite.interactive = true; 
         sprite.buttonMode = true; 
         sprite.anchor.set = 0.5; 
+
+        sprite.on('pointertap',tileClicked);
     
-        sprite.on('pointerdown', onDragStart)
-        .on('pointerup', onDragEnd)
-        .on('pointerupoutside', onDragEnd)
-        .on('pointermove', onDragMove);
+        // sprite.on('pointerdown', onDragStart)
+        // .on('pointerup', onDragEnd)
+        // .on('pointerupoutside', onDragEnd)
+        // .on('pointermove', onDragMove);
     
         app.stage.addChild(sprite);
     }
