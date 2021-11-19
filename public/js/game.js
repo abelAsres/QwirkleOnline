@@ -456,6 +456,7 @@ function tileClicked(event){
     yPositon = selectedTile.y;
     if (swap){
         app.stage.removeChild(selectedTile);
+        console.log(this.shape + this.color);
         socket.emit('tile-swap',{gameID: gameID, playerID: playerID,shape:this.shape, color:this.color});
         //getTileAtRandom();
     
@@ -468,17 +469,27 @@ function tileClicked(event){
         selectedTile.alpha = 0.5;
         grid.on('mousedown',moveSelectedTile);
     }
-   
-
 }
 
 function moveSelectedTile(e){
+
+    socket.emit('play-tile', {gameID: gameID, playerID: playerID, shape: this.shape, color: this.color})
+
+    placeSelectedTile(e);
+}
+
+function placeSelectedTile(e){
     let pos = e.data.global;
+    pos = grid.getCellCorner(pos.x, pos.y);
+
     selectedTile.x = pos.x;
     selectedTile.y = pos.y;
     app.stage.removeChild(line);
     selectedTile.alpha = 1;
     selectedTile = PIXI.Sprite();
+}
+
+function tileENUM(){
 
 }
 

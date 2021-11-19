@@ -237,6 +237,13 @@ class PixiJSGrid extends PIXI.Graphics {
     };
   }
 
+  getCellCorner(x, y){
+    let coord = this.getCellCoordinates(x, y);
+    let nX = coord.x * this.cellSize;
+    let nY = coord.y * this.cellSize;
+    return {x: nX, y: nY};
+  }
+
   /**
    * Callback fired after detecting a mousemove event.
    * 
