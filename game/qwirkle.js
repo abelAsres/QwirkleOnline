@@ -127,6 +127,15 @@ class Qwirkle {
         */
     }
 
+    getColorIndex(color){
+        console.log(`getting color index for ${color}`);
+        return colors.indexOf(color);
+    }
+    
+    getShapeIndex(shape){
+        console.log(`getting shape index for ${shape}`);
+        return shapes.indexOf(shape);
+    }
 }
 
 

@@ -122,7 +122,7 @@ io.on('connection', function (socket) {
   });
 
   // Implement Unready
-
+  let tileArray = [];
   socket.on('start-game', data =>{
     const {gameID, playerID} = data;
     // Add check for readiness later
@@ -141,7 +141,6 @@ io.on('connection', function (socket) {
         console.log("Player ID: " + playerID);
         console.log(i + ": " + rList[gameID].players[i]);
 
-        let tileArray = [];
         for (let j = 0; j < 6; j++){
           tileArray.push(rList[gameID].dealTile());
         }
@@ -149,6 +148,38 @@ io.on('connection', function (socket) {
       }
     }
   })
+
+  socket.on('tile-swap',data =>{
+  const {gameID, playerID, shape,color} = data;
+  
+  console.log(`gameID: ${gameID}, playerID: ${playerID}, shape:${shape}, color: ${color}`);
+  console.log("TILEARRAY");
+  const colorNum = rList[gameID].getColorIndex(color);
+  const shapeNum = rList[gameID].getShapeIndex(shape);
+  const tileNum = parseInt(""+colorNum+shapeNum);
+  rList[gameID].deck.push(tileNum);
+  const tileIndex = tileArray.indexOf(tileNum);
+  if (tileIndex > -1) {
+    tileArray.splice(tileIndex, 1);
+  }
+
+  tileArray.push(rList[gameID].dealTile());
+  socket.emit('draw-single-tile',{target:playerID, tile: tileArray[tileArray.length - 1]});
+  console.log(tileArray);
+  
+
+
+    // for (let i in rList[gameID].players){
+    //   console.log("Player ID: " + playerID);
+    //   console.log(i + ": " + rList[gameID].players[i]);
+
+    //   let tileArray = [];
+    //   for (let j = 0; j < 6; j++){
+    //     tileArray.push(rList[gameID].dealTile());
+    //   }
+    //   io.to(gameID).emit('draw-tile', {target: rList[gameID].players[i], tileArray: tileArray});
+    // }
+})
 
   socket.on('play-tile', data =>{
     const {gameID, tile, coord} = data;
