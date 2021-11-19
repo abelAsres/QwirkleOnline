@@ -142,6 +142,13 @@ socket.on('draw-tile', data =>{
     }
 });
 
+socket.on('draw-single-tile', data =>{
+    const {target, tile} = data; 
+
+    if (playerID == target){
+        getSingleTile(tile);
+    }
+});
 // Currently incomplete
 function UpdatePlayerList (count) {
     for (let i = 1; i <= count; i++){
@@ -213,46 +220,6 @@ function setup(loader,resources){
     }
 }
 */
-
-let line;
-function showSelection(c1,c2){
-    line = new PIXI.Graphics();
-    line.lineStyle(5,0xFFEA00,1)
-    .moveTo(c1,c2)
-    .lineTo(c1,c2+63)
-    .moveTo(c1,c2)
-    .lineTo(c1+63,c2)
-    .moveTo(c1,c2+63)
-    .lineTo(c1+63,c2+63)
-    .moveTo(c1+63,c2+63)
-    .lineTo(c1+63,c2);
-    app.stage.addChild(line);
-}
-
-let selectedTile = PIXI.Sprite();
-
-function tileClicked(event){
-    app.stage.removeChild(line);
-    showSelection(this.x,this.y);
-    this.data = event.data;
-    console.log(this);
-    selectedTile = this;
-    app.stage.interactive = true;
-    selectedTile.alpha = 0.5;
-    grid.on('mousedown',moveSelectedTile);
-
-}
-
-function moveSelectedTile(e){
-    let pos = e.data.global;
-    selectedTile.x = pos.x;
-    selectedTile.y = pos.y;
-    app.stage.removeChild(line);
-    selectedTile.alpha = 1;
-    selectedTile = PIXI.Sprite();
-
-}
-
 
 function onDragStart(event) {
     // store a reference to the data
@@ -335,7 +302,22 @@ let selectedShape = [];
 const colors = ['Yellow','Blue','Red','Orange','Purple','Green'];
 const shapes = ['Circle','Cross','Diamond','Square','Star','Triangle'];
 
+function getSingleTile(tile){
+    PIXI.utils.clearTextureCache();
+    selectedColor = [];
+    selectedShape = [];
+    selectedShape.push(tile % 10);
+    selectedColor.push(Math.floor(tile / 10));
+    console.log(tile);
+
+    for (let i = 0; i < 6; i++){
+        loader.add(shapesTileSheet[i]);
+    }
+    loader.load(drawTile);
+}
+
 function getTile(tileArray){
+    PIXI.utils.clearTextureCache();
     for (let i in tileArray){
         selectedShape.push(tileArray[i] % 10);
         selectedColor.push(Math.floor(tileArray[i] / 10));
@@ -382,6 +364,8 @@ function drawTile (loader, resources) {
         let texture = PIXI.Texture.from(`${shapes[selectedShape[i]]}${colors[selectedColor[i]]}Tile.png`);
         let sprite = new PIXI.Sprite(texture);
 
+        sprite.color = colors[selectedColor[i]];
+        sprite.shape = shapes[selectedShape[i]];
         sprite.position.set(xPosition,yPositon);
         xPosition+=63;
 
@@ -441,6 +425,63 @@ function drawTile2 (tileNum) {
     
     console.log("DrawTile2: " + selectedColor + " " + selectedShape);
 }
+
+let swap = false;
+
+function swapTile(){
+    swap = !swap;    
+    //console.log(playerID);
+}
+
+let line;
+function showSelection(c1,c2){
+    line = new PIXI.Graphics();
+    line.lineStyle(5,0xFFEA00,1)
+    .moveTo(c1,c2)
+    .lineTo(c1,c2+63)
+    .moveTo(c1,c2)
+    .lineTo(c1+63,c2)
+    .moveTo(c1,c2+63)
+    .lineTo(c1+63,c2+63)
+    .moveTo(c1+63,c2+63)
+    .lineTo(c1+63,c2);
+    app.stage.addChild(line);
+}
+
+let selectedTile = PIXI.Sprite();
+
+function tileClicked(event){
+    selectedTile = this;
+    xPosition = selectedTile.x;
+    yPositon = selectedTile.y;
+    if (swap){
+        app.stage.removeChild(selectedTile);
+        socket.emit('tile-swap',{gameID: gameID, playerID: playerID,shape:this.shape, color:this.color});
+        //getTileAtRandom();
+    
+    }else{
+        app.stage.removeChild(line);
+        showSelection(this.x,this.y);
+        this.data = event.data;
+        console.log(this);
+        app.stage.interactive = true;
+        selectedTile.alpha = 0.5;
+        grid.on('mousedown',moveSelectedTile);
+    }
+   
+
+}
+
+function moveSelectedTile(e){
+    let pos = e.data.global;
+    selectedTile.x = pos.x;
+    selectedTile.y = pos.y;
+    app.stage.removeChild(line);
+    selectedTile.alpha = 1;
+    selectedTile = PIXI.Sprite();
+
+}
+
 
 // throughout the process multiple signals can be dispatched.
 loader.onProgress.add(() => {console.log('loader in progress')}); // called once per loaded/errored file
