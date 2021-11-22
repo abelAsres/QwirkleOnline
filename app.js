@@ -80,11 +80,11 @@ app.use('/game',gameController);
 io.on('connection', function (socket) {  
   socket.on('create-room', username => {
     // Generate unique ID, and join to room. Return ID to room.
-    let roomID = uuid.v4().replace(/-/g, '');
-    socket.join(roomID);
+    let gameID = uuid.v4().replace(/-/g, '');
+    socket.join(gameID);
 
-    rList[roomID] = new Qwirkle(username);
-    io.to(roomID).emit('room-created', roomID);
+    rList[gameID] = new Qwirkle(username);
+    io.to(gameID).emit('room-created', gameID);
   });
 
   //socket.to().emit();
@@ -102,6 +102,8 @@ io.on('connection', function (socket) {
     if (playerCount < 4){
       socket.join(gameID);
       playerCount++;
+
+      rList[gameID].players.push[username];
 
       socket.emit('room-joined', {id: gameID, count: playerCount});
       //io.to(gameID).emit('room-joined', {id: gameID, count: playerCount});
@@ -135,7 +137,7 @@ io.on('connection', function (socket) {
       rList[gameID].startGame();
       console.log(rList[gameID].players);
       
-      io.to(gameID).emit('init-scoreboard');
+      io.to(gameID).emit('init-scoreboard', rList[gameID].players.length);
 
       for (let i in rList[gameID].players){
         console.log("Player ID: " + playerID);
@@ -150,24 +152,22 @@ io.on('connection', function (socket) {
   })
 
   socket.on('tile-swap',data =>{
-  const {gameID, playerID, shape,color} = data;
-  
-  console.log(`gameID: ${gameID}, playerID: ${playerID}, shape:${shape}, color: ${color}`);
-  console.log("TILEARRAY");
-  const colorNum = rList[gameID].getColorIndex(color);
-  const shapeNum = rList[gameID].getShapeIndex(shape);
-  const tileNum = parseInt(""+colorNum+shapeNum);
-  rList[gameID].deck.push(tileNum);
-  const tileIndex = tileArray.indexOf(tileNum);
-  if (tileIndex > -1) {
-    tileArray.splice(tileIndex, 1);
+    const {gameID, playerID, shape,color} = data;
+    
+    console.log(`gameID: ${gameID}, playerID: ${playerID}, shape:${shape}, color: ${color}`);
+    console.log("TILEARRAY");
+    const colorNum = rList[gameID].getColorIndex(color);
+    const shapeNum = rList[gameID].getShapeIndex(shape);
+    const tileNum = parseInt(""+colorNum+shapeNum);
+    rList[gameID].deck.push(tileNum);
+    const tileIndex = tileArray.indexOf(tileNum);
+    if (tileIndex > -1) {
+      tileArray.splice(tileIndex, 1);
   }
 
   tileArray.push(rList[gameID].dealTile());
   socket.emit('draw-single-tile',{target:playerID, tile: tileArray[tileArray.length - 1]});
   console.log(tileArray);
-  
-
 
     // for (let i in rList[gameID].players){
     //   console.log("Player ID: " + playerID);
@@ -181,11 +181,12 @@ io.on('connection', function (socket) {
     // }
 })
 
-  socket.on('play-tile', data =>{
-    const {gameID, tile, coord} = data;
-    const {x, y} = coord;
-    rList[gameID].playTile(tile, x, y);
-
+  socket.on('client-play-tile', data =>{
+    const {gameID, playerID, tile, gridCoords, absCoords} = data;
+    const {x, y} = gridCoords;
+    console.log(`Playing Tile ${tile} to (${x}, ${y})`);
+    if (rList[gameID].playTile(tile, x, y))
+      io.to(gameID).emit('server-play-tile', {gameID, playerID, tile, gridCoords, absCoords});
   });
 
   socket.on('disconnect', function () {

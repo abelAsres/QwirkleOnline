@@ -5,35 +5,20 @@ const grid = new PixiJSGrid(630, 63);
 const socket = io();
 
 var playerList = [];
-let gameID;// = document.getElementById('copy-invite-button').innerText;
-var playerID = "";
-// Temporary variable, will be replaced with username when it becomes available.
-var playerNum;
-let playerStatus = false;
+let gameID; // = document.getElementById('copy-invite-button').innerText;
+var playerID = ""; // Temporary variable, will be replaced with username when it becomes available.
+var playerNum; 
+let playerStatus = false; 
 
 function CopyToClipboard () {
     /* Get the text field */
   var copyText = document.getElementById("copy-invite-button");
-
-  /* Select the text field */
-  //copyText.select();
-  //copyText.setSelectionRange(0, 99999); /* For mobile devices */
 
   /* Copy the text inside the text field */
   navigator.clipboard.writeText(copyText.href);
   
   /* Alert the copied text */
   alert("Copied the text: " + copyText.href);
-    
-    /*
-    const link = document.querySelector('#copy-invite-button');
-    var range = document.createRange();
-    range.selectNode(link);
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-    document.execCommand("copy");//method is deprecated need alternative!!!!
-    alert("text copied");
-    */
 }
 
 $(document).ready(function(){
@@ -81,6 +66,7 @@ socket.on('room-joined', (data) => {
 });
 
 socket.on('start-game', (data) => {
+    console.log("Start Game 2");
     startGame2();
 });
 
@@ -91,6 +77,7 @@ socket.on('ready-status', (data) => {
 function startGame(){
     console.log('Start game has been pressed');
     socket.emit('start-game', {gameID: gameID, playerID: playerID});
+    /*
     grid.on('mousedown', (evt) => {
         const mouseCoords = evt.data.global;
         // check if the mouse is within the bounds of this grid. If not, do nothing.
@@ -100,10 +87,11 @@ function startGame(){
           //grid.onMouseDown(evt, gridCoords);
         }
     });
+    */
 }
 
 function startGame2(){
-
+    socket.emit('start-game', {gameID: gameID, playerID: playerID});
 }
 
 //
@@ -141,6 +129,67 @@ socket.on('draw-tile', data =>{
         getTile(tileArray);
     }
 });
+
+socket.on('server-play-tile', data =>{
+    const {playerID, tile, gridCoords, absCoords} = data;
+    placeSelectedTile2(absCoords.x, absCoords.y);
+});
+
+function playTile(e){
+    let tile = tileENUM(selectedTile.shape, selectedTile.color);
+    let mouseCoords = e.data.global;
+    let absCoords = {x: mouseCoords.x, y: mouseCoords.y}
+    let gridCoords = grid.getCellCoordinates(mouseCoords.x, mouseCoords.y);
+
+    socket.emit('client-play-tile', {gameID, playerID, tile, gridCoords, absCoords})
+}
+
+function placeSelectedTile(e){
+    let pos = e.data.global;
+    pos = grid.getCellCorner(pos.x, pos.y);
+
+    selectedTile.x = pos.x;
+    selectedTile.y = pos.y;
+    app.stage.removeChild(line);
+    selectedTile.alpha = 1;
+    selectedTile = PIXI.Sprite();
+}
+
+function placeSelectedTile2(x, y){
+    let pos = grid.getCellCorner(x, y);
+    console.log(pos);
+
+    selectedTile.x = pos.x;
+    selectedTile.y = pos.y;
+    app.stage.removeChild(line);
+    selectedTile.alpha = 1;
+    selectedTile.interactive = false;
+    selectedTile = PIXI.Sprite();
+}
+
+function tileENUM(shape, color){
+    let ret;
+
+    if (color == 'Yellow') ret = 0;
+    else if (color == 'Blue') ret = 10;
+    else if (color == 'Red') ret = 20;
+    else if (color == 'Orange') ret = 30; 
+    else if (color == 'Purple') ret = 40;
+    else if (color == 'Green') ret = 50;
+
+    if (shape == 'Circle') ret += 0;
+    else if (shape == 'Cross') ret += 1;
+    else if (shape == 'Diamond') ret += 2;
+    else if (shape == 'Square') ret += 3;
+    else if (shape == 'Star') ret += 4;
+    else if (shape == 'Triangle') ret += 5;
+
+    return ret;
+}
+
+function endTurn(){
+
+}
 
 socket.on('draw-single-tile', data =>{
     const {target, tile} = data; 
@@ -245,58 +294,6 @@ function onDragMove() {
     }
 }
 
-let tileTracker = {
-    star: {
-        red:0,
-        blue:0,
-        orange:0,
-        purple:0,
-        green:0,
-        yellow:0
-    },
-    cross: {
-        red:0,
-        blue:0,
-        orange:0,
-        purple:0,
-        green:0,
-        yellow:0
-    },
-    diamond: {
-        red:0,
-        blue:0,
-        orange:0,
-        purple:0,
-        green:0,
-        yellow:0
-    },
-    triangle: {
-        red:0,
-        blue:0,
-        orange:0,
-        purple:0,
-        green:0,
-        yellow:0
-    },
-    square: {
-        red:0,
-        blue:0,
-        orange:0,
-        purple:0,
-        green:0,
-        yellow:0
-    },
-    circle: {
-        red:0,
-        blue:0,
-        orange:0,
-        purple:0,
-        green:0,
-        yellow:0
-    },
-    totalInPlay:0
-}
-
 let selectedColor = [];
 let selectedShape = [];
 const colors = ['Yellow','Blue','Red','Orange','Purple','Green'];
@@ -358,7 +355,7 @@ function getTileAtRandom(){
 }
 
 function drawTile (loader, resources) {
-    console.log(resources);
+    //console.log(resources);
     
     for (let i in selectedColor){
         let texture = PIXI.Texture.from(`${shapes[selectedShape[i]]}${colors[selectedColor[i]]}Tile.png`);
@@ -411,14 +408,6 @@ function drawTile (loader, resources) {
     */
 }
 
-function checkTileAvailablity(shape,color){
-    return tileTracker[shape][color] < 3;
-}
-
-function allTilesInPlay(){
-    return tileTracker.totalInPlay == 108;
-}
-
 function drawTile2 (tileNum) {
     selectedColor = colors[Math.floor(tileNum/10)];
     selectedShape = shapes[tileNum%10];
@@ -460,42 +449,20 @@ function tileClicked(event){
         socket.emit('tile-swap',{gameID: gameID, playerID: playerID,shape:this.shape, color:this.color});
         //getTileAtRandom();
     
-    }else{
+    } else {
         app.stage.removeChild(line);
         showSelection(this.x,this.y);
         this.data = event.data;
         console.log(this);
         app.stage.interactive = true;
         selectedTile.alpha = 0.5;
-        grid.on('mousedown',moveSelectedTile);
+        grid.on('mousedown',playTile);
     }
-}
-
-function moveSelectedTile(e){
-
-    socket.emit('play-tile', {gameID: gameID, playerID: playerID, shape: this.shape, color: this.color})
-
-    placeSelectedTile(e);
-}
-
-function placeSelectedTile(e){
-    let pos = e.data.global;
-    pos = grid.getCellCorner(pos.x, pos.y);
-
-    selectedTile.x = pos.x;
-    selectedTile.y = pos.y;
-    app.stage.removeChild(line);
-    selectedTile.alpha = 1;
-    selectedTile = PIXI.Sprite();
-}
-
-function tileENUM(){
-
 }
 
 
 // throughout the process multiple signals can be dispatched.
-loader.onProgress.add(() => {console.log('loader in progress')}); // called once per loaded/errored file
+loader.onProgress.add(() => {/*console.log('loader in progress')*/}); // called once per loaded/errored file
 loader.onError.add(() => {console.log('an error')}); // called once per errored file
-loader.onLoad.add(() => {console.log('loading resource')}); // called once per loaded file
-loader.onComplete.add(() => {console.log('added resource')}); // called once when the queued resources all load.
+loader.onLoad.add(() => {/*console.log('loading resource')*/}); // called once per loaded file
+loader.onComplete.add(() => {/*console.log('added resource')*/}); // called once when the queued resources all load.
