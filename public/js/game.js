@@ -9,34 +9,20 @@ const socket = io();
 
 var playerList = [];
 let gameID; // = document.getElementById('copy-invite-button').innerText;
-var playerID = "";
-// Temporary variable, will be replaced with username when it becomes available.
-var playerNum;
-let playerStatus = false;
+
+var playerID = ""; // Temporary variable, will be replaced with username when it becomes available.
+var playerNum; 
+let playerStatus = false; 
 
 function CopyToClipboard() {
   /* Get the text field */
   var copyText = document.getElementById("copy-invite-button");
-
-  /* Select the text field */
-  //copyText.select();
-  //copyText.setSelectionRange(0, 99999); /* For mobile devices */
 
   /* Copy the text inside the text field */
   navigator.clipboard.writeText(copyText.href);
 
   /* Alert the copied text */
   alert("Copied the text: " + copyText.href);
-
-  /*
-    const link = document.querySelector('#copy-invite-button');
-    var range = document.createRange();
-    range.selectNode(link);
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-    document.execCommand("copy");//method is deprecated need alternative!!!!
-    alert("text copied");
-    */
 }
 
 $(document).ready(function () {
@@ -84,32 +70,34 @@ socket.on("room-joined", (data) => {
   console.log(`Player ${playerNum} has joined game #${gameID}`);
 });
 
-socket.on("start-game", (data) => {
-  startGame2();
+socket.on('start-game', (data) => {
+    console.log("Start Game 2");
+    startGame2();
 });
 
-socket.on("ready-status", (data) => {});
+socket.on('ready-status', (data) => {
 
-function startGame() {
-  console.log("Start game has been pressed");
-  socket.emit("start-game", { gameID: gameID, playerID: playerID });
-  grid.on("mousedown", (evt) => {
-    const mouseCoords = evt.data.global;
-    // check if the mouse is within the bounds of this grid. If not, do nothing.
-    if (
-      mouseCoords.x >= grid.bounds.x1 &&
-      mouseCoords.x <= grid.bounds.x2 &&
-      mouseCoords.y >= grid.bounds.y1 &&
-      mouseCoords.y <= grid.bounds.y2
-    ) {
-      let gridCoords = grid.getCellCoordinates(mouseCoords.x, mouseCoords.y);
-      socket.emit("play-tile", { gameID, tile: 1, coord: gridCoords });
-      //grid.onMouseDown(evt, gridCoords);
-    }
-  });
+})
+
+function startGame(){
+    console.log('Start game has been pressed');
+    socket.emit('start-game', {gameID: gameID, playerID: playerID});
+    /*
+    grid.on('mousedown', (evt) => {
+        const mouseCoords = evt.data.global;
+        // check if the mouse is within the bounds of this grid. If not, do nothing.
+        if (mouseCoords.x >= grid.bounds.x1 && mouseCoords.x <= grid.bounds.x2 && mouseCoords.y >= grid.bounds.y1 && mouseCoords.y <= grid.bounds.y2) {
+          let gridCoords = grid.getCellCoordinates(mouseCoords.x, mouseCoords.y);
+          socket.emit('play-tile', {gameID, tile: 1, coord: gridCoords});
+          //grid.onMouseDown(evt, gridCoords);
+        }
+    });
+    */
 }
 
-function startGame2() {}
+function startGame2(){
+    socket.emit('start-game', {gameID: gameID, playerID: playerID});
+}
 
 //
 socket.on("update-player-list", (count) => {
@@ -134,10 +122,74 @@ socket.on("update-player-status", (playerNum) => {
   );
 });
 
-socket.on("init-scoreboard", (count) => {
-  for (let i = 1; i <= count; i++) {
-    $("#player-" + i + "S").replaceWith("<td id=player-" + i + "S>0</td>");
-  }
+
+socket.on('server-play-tile', data =>{
+    const {playerID, tile, gridCoords, absCoords} = data;
+    placeSelectedTile2(absCoords.x, absCoords.y);
+});
+
+function playTile(e){
+    let tile = tileENUM(selectedTile.shape, selectedTile.color);
+    let mouseCoords = e.data.global;
+    let absCoords = {x: mouseCoords.x, y: mouseCoords.y}
+    let gridCoords = grid.getCellCoordinates(mouseCoords.x, mouseCoords.y);
+
+    socket.emit('client-play-tile', {gameID, playerID, tile, gridCoords, absCoords})
+}
+
+function placeSelectedTile(e){
+    let pos = e.data.global;
+    pos = grid.getCellCorner(pos.x, pos.y);
+
+    selectedTile.x = pos.x;
+    selectedTile.y = pos.y;
+    app.stage.removeChild(line);
+    selectedTile.alpha = 1;
+    selectedTile = PIXI.Sprite();
+}
+
+function placeSelectedTile2(x, y){
+    let pos = grid.getCellCorner(x, y);
+    console.log(pos);
+
+    selectedTile.x = pos.x;
+    selectedTile.y = pos.y;
+    app.stage.removeChild(line);
+    selectedTile.alpha = 1;
+    selectedTile.interactive = false;
+    selectedTile = PIXI.Sprite();
+}
+
+function tileENUM(shape, color){
+    let ret;
+
+    if (color == 'Yellow') ret = 0;
+    else if (color == 'Blue') ret = 10;
+    else if (color == 'Red') ret = 20;
+    else if (color == 'Orange') ret = 30; 
+    else if (color == 'Purple') ret = 40;
+    else if (color == 'Green') ret = 50;
+
+    if (shape == 'Circle') ret += 0;
+    else if (shape == 'Cross') ret += 1;
+    else if (shape == 'Diamond') ret += 2;
+    else if (shape == 'Square') ret += 3;
+    else if (shape == 'Star') ret += 4;
+    else if (shape == 'Triangle') ret += 5;
+
+    return ret;
+}
+
+function endTurn(){
+
+}
+
+socket.on('draw-single-tile', data =>{
+    const {target, tile} = data; 
+
+    if (playerID == target){
+        getSingleTile(tile);
+    }
 });
 
 socket.on("draw-tile", (data) => {
@@ -222,58 +274,6 @@ function onDragMove() {
   }
 }
 
-let tileTracker = {
-  star: {
-    red: 0,
-    blue: 0,
-    orange: 0,
-    purple: 0,
-    green: 0,
-    yellow: 0,
-  },
-  cross: {
-    red: 0,
-    blue: 0,
-    orange: 0,
-    purple: 0,
-    green: 0,
-    yellow: 0,
-  },
-  diamond: {
-    red: 0,
-    blue: 0,
-    orange: 0,
-    purple: 0,
-    green: 0,
-    yellow: 0,
-  },
-  triangle: {
-    red: 0,
-    blue: 0,
-    orange: 0,
-    purple: 0,
-    green: 0,
-    yellow: 0,
-  },
-  square: {
-    red: 0,
-    blue: 0,
-    orange: 0,
-    purple: 0,
-    green: 0,
-    yellow: 0,
-  },
-  circle: {
-    red: 0,
-    blue: 0,
-    orange: 0,
-    purple: 0,
-    green: 0,
-    yellow: 0,
-  },
-  totalInPlay: 0,
-};
-
 let selectedColor = [];
 let selectedShape = [];
 const colors = ["Yellow", "Blue", "Red", "Orange", "Purple", "Green"];
@@ -325,9 +325,9 @@ function getTileAtRandom() {
   }
 }
 
+
 function drawTile(loader, resources) {
   console.log(resources);
-
   for (let i in selectedColor) {
     let texture = PIXI.Texture.from(
       `${shapes[selectedShape[i]]}${colors[selectedColor[i]]}Tile.png`
@@ -359,19 +359,12 @@ function drawTile(loader, resources) {
   loader.reset();
 }
 
-function checkTileAvailablity(shape, color) {
-  return tileTracker[shape][color] < 3;
-}
 
-function allTilesInPlay() {
-  return tileTracker.totalInPlay == 108;
-}
-
-function drawTile2(tileNum) {
-  selectedColor = colors[Math.floor(tileNum / 10)];
-  selectedShape = shapes[tileNum % 10];
-
-  console.log("DrawTile2: " + selectedColor + " " + selectedShape);
+function drawTile2 (tileNum) {
+    selectedColor = colors[Math.floor(tileNum/10)];
+    selectedShape = shapes[tileNum%10];
+    
+    console.log("DrawTile2: " + selectedColor + " " + selectedShape);
 }
 
 let swap = false;
