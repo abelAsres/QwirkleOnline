@@ -129,7 +129,7 @@ socket.on('server-play-tile', data =>{
 });
 
 function playTile(e){
-    let tile = tileENUM(selectedTile.shape, selectedTile.color);
+    let tile = tileENUM2(selectedTile.shape, selectedTile.color);
     let mouseCoords = e.data.global;
     let absCoords = {x: mouseCoords.x, y: mouseCoords.y}
     let gridCoords = grid.getCellCoordinates(mouseCoords.x, mouseCoords.y);
@@ -160,7 +160,9 @@ function placeSelectedTile2(x, y){
     selectedTile = PIXI.Sprite();
 }
 
-function tileENUM(shape, color){
+function tileENUM2(shape, color){
+    console.log(`Shape is ${shape} and Color is ${color}`);
+
     let ret;
 
     if (color == 'Yellow') ret = 0;
@@ -442,7 +444,7 @@ function tileClicked(event) {
     console.log(this);
     //app.stage.interactive = true;
     //selectedTile.alpha = 0.5;
-    grid.on("mousedown", moveSelectedTile);
+    grid.on("mousedown", playTile);
   }
 }
 
@@ -463,7 +465,7 @@ function swapTiles() {
 }
 
 function moveSelectedTile(e) {
-  socket.emit("play-tile", {
+  socket.emit("client-play-tile", {
     gameID: gameID,
     playerID: playerID,
     shape: this.shape,
