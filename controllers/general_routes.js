@@ -82,6 +82,7 @@ router.post('/registration',(req,res)=>{
     if(!passValidation) {
         
         console.log('did not pass validation');
+        res.statusCode = 400;
         res.render('general/registration', {
             title: 'Registration',
             style:'registration.css',
@@ -99,6 +100,7 @@ router.post('/registration',(req,res)=>{
         .then((doc=>{
             if(doc!=null){
                 errors.email.push(error_messages[4]);
+                res.statusCode = 400;
                 res.render('general/registration',{
                     title:"Registration",
                     style:'registration.css',
@@ -147,6 +149,7 @@ router.post('/registration',(req,res)=>{
                     })
                     */
                 console.log('Email sent');
+                res.statusCode= 302;
                 res.redirect('/login?showModal=true');
                 })
                 
