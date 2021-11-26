@@ -29,6 +29,8 @@ $(document).ready(function () {
   playerID = document.getElementById("userName").innerText;
   gameID = document.getElementById("gameID").innerText;
 
+  history.pushState(null, "", location.href.split("/join?")[0]);
+
   // Check if user came through the create button or joined.
   if (gameID == undefined || gameID == "") {
     socket.emit("create-room", playerID);
@@ -81,6 +83,7 @@ socket.on('ready-status', (data) => {
 
 function startGame(){
     console.log('Start game has been pressed');
+    grid.on("mousedown", playTile);
     socket.emit('start-game', {gameID: gameID, playerID: playerID});
     /*
     grid.on('mousedown', (evt) => {
@@ -127,9 +130,12 @@ socket.on('server-play-tile', data =>{
     const {playerID, tile, gridCoords, absCoords} = data;
     placeSelectedTile2(absCoords.x, absCoords.y);
 });
+let i = 0;
 
 function playTile(e){
-    let tile = tileENUM2(selectedTile.shape, selectedTile.color);
+  console.log(i + ": Play Tile Called");
+  i++;
+  let tile = tileENUM2(selectedTile.shape, selectedTile.color);
     let mouseCoords = e.data.global;
     let absCoords = {x: mouseCoords.x, y: mouseCoords.y}
     let gridCoords = grid.getCellCoordinates(mouseCoords.x, mouseCoords.y);
@@ -161,7 +167,7 @@ function placeSelectedTile2(x, y){
 }
 
 function tileENUM2(shape, color){
-    console.log(`Shape is ${shape} and Color is ${color}`);
+    //console.log(`Shape is ${shape} and Color is ${color}`);
 
     let ret;
 
@@ -180,10 +186,6 @@ function tileENUM2(shape, color){
     else if (shape == 'Triangle') ret += 5;
 
     return ret;
-}
-
-function endTurn(){
-
 }
 
 socket.on('draw-single-tile', data =>{
@@ -444,8 +446,13 @@ function tileClicked(event) {
     console.log(this);
     //app.stage.interactive = true;
     //selectedTile.alpha = 0.5;
-    grid.on("mousedown", playTile);
+    //grid.on("mousedown", playTile);
   }
+}
+
+function endTurn(){
+  socket.emit("client-end-turn", {gameID, playerID, tiles});
+
 }
 
 function swapTiles() {
@@ -462,17 +469,6 @@ function swapTiles() {
       tiles: tileENums,
     });
   }
-}
-
-function moveSelectedTile(e) {
-  socket.emit("client-play-tile", {
-    gameID: gameID,
-    playerID: playerID,
-    shape: this.shape,
-    color: this.color,
-  });
-
-  placeSelectedTile(e);
 }
 
 function placeSelectedTile(e) {

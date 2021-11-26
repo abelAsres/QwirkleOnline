@@ -10,12 +10,15 @@ const loadDashBoard = require('../middleware/authorizationUser');
 
 router.get('/join/:id?',isAuthenticated, (req, res) => {
     console.log(`Sending you to room: ${req.query.id}`);
+    //res.redirect('/game');
+    
     res.render('game/game',{
         title:'Game Page',
         style: 'game.css',
         gameID: req.query.id,
-        user:req.session.userInfo
+        user: req.session.userInfo
     });
+    
 });
 
 router.get('/',isAuthenticated,(req,res)=>{
@@ -33,7 +36,8 @@ router.get('/',isAuthenticated,(req,res)=>{
     
     res.render('game/game',{
         title:'Game Page',
-        style: 'game.css'
+        style: 'game.css',
+        user: req.session.userInfo
     });
 });
 

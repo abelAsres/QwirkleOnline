@@ -5,7 +5,7 @@ const isLoggedIn=(req,res,next)=>{
     next();
     */
     // Remove Following Section when debugging is complete
-    console.log('user authenticated');
+    //console.log('user authenticated');
     next();
     //
     /*

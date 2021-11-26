@@ -35,7 +35,7 @@ class Qwirkle {
         this.start = true;
         this.turn = 0;
 
-        console.log(this.board);
+        //console.log(this.board);
     }
 
     endTurn(){
@@ -51,8 +51,6 @@ class Qwirkle {
         return ret;
     }
 
-
-
     playFirstTile(tile, x, y){
         let ret = false; 
 
@@ -65,8 +63,11 @@ class Qwirkle {
         return ret;
     }
 
+    addPlayer(username){
+        this.players.push(username);
+    }
+
     playNormalTile(tile, x, y){
-        let ret = true;
         
         // If this space is empty find the non empty neighbours. 
         if (this.board[x][y] == -1) {
@@ -77,7 +78,7 @@ class Qwirkle {
             for (let i = 0; i < 4; i++){
                 let nX = x + neighbourHelper[i][0];
                 let nY = y + neighbourHelper[i][1];
-                console.log(`Check ${nX}, ${nY}`);
+                //console.log(`Check ${nX}, ${nY}`);
                 if (nX >= 0 && nX <= this.width && nY >= 0 && nY <= this.width){
                     if (this.board[nX][nY] != -1){
                         neighbour.push([nX, nY]);
@@ -94,13 +95,13 @@ class Qwirkle {
             for (let i = 0; i < neighbour.length; i++){
                 let nX = x + neighbourHelper2[i][0];
                 let nY = y + neighbourHelper2[i][1];
-                console.log("LOOP: " + i);
-
-                for (let j = 0; j < 6; j++){
+                let exit = false;
+                //console.log("LOOP: " + i);
+                
+                for (let j = 0; j < 6 && !exit; j++){
                     if (nX < 0 || nX > this.width || nY < 0 || nY > this.width){
                         console.log("WHY");
                         this.board[x][y] = tile;
-                        return true;
                     }
                     console.log(`Tile ${tile} at ${nX}, ${nY}`);
                     if (this.board[nX][nY] == tile){
@@ -116,21 +117,39 @@ class Qwirkle {
                     else if (this.board[nX][nY] == -1){
                         console.log("3");
                         this.board[x][y] = tile;
-                        return true;
+                        exit = true;
                     }
-                    else{
+                    else {
                         console.log("4");
                         return false;
-                    } 
-
+                    }
                     nX+= neighbourHelper2[i][0];
                     nY+= neighbourHelper2[i][1];
                 }
             }
 
             console.log("5");
-            return ret;
+            return true;
+        }
+        //return false;
+    }
+    
+    playTile(tile, x, y){
+        if (!this.firstTilePlayed){
+            if (this.playFirstTile(tile, x, y)){
+                this.firstTilePlayed = true;
+                return true;
+            }
+            else return false;
+        }
+        // Location must be empty. Must be next to a tile. Must meet adjacency requirements. 
+        // Check if empty
+        else {
+            return this.playNormalTile(tile, x, y);
+        }
+    }
 
+        /*
             let rowCheck = [];
 
             for (let i = 0; i < neighbour.length; i++){
@@ -174,10 +193,10 @@ class Qwirkle {
                     count++;
                 }*/
             
-        }
         
-        return ret; 
-
+        
+        //return ret; 
+        /*
         if (this.board[x][y] == -1) {
             let play = true;
             let neighbour = [];
@@ -199,7 +218,7 @@ class Qwirkle {
                     }
                     else play = false;
                 }
-
+        
                 /*
                 if (nX >= 0 && nX <= this.width && nY >= 0 && nY <= this.width){
                     neighbour.push([nX, nY]);
@@ -217,14 +236,9 @@ class Qwirkle {
                         nY = nY + neighbourHelper[i][1];                    }
                 }
                 */
-            }
+            
             //console.log(neighbour);
             
-            for (let i = 0; i < neighbour.length; i++){
-
-
-            }
-
             /*
             // Check neighbours for tiles: First corner cases, edge cases then normal case
             if ((x == 0 && y == 0) || (x == this.width && y == 0) || (x == 0 && y == this.width) || (x == this.width && y == this.width)){
@@ -240,12 +254,9 @@ class Qwirkle {
                 console.log("Normal");
             }
             */
-        }
-        return ret;
-    }
-
+    /*
     tilePlacementCheck(tile, x, y, xMod, yMod, counter){
-        console.log(`Check ${tile} at ${x}, ${y}`);
+        //console.log(`Check ${tile} at ${x}, ${y}`);
         if (x >= 0 && x <= this.width && y >= 0 && y <= this.width){
             return true;
         }
@@ -262,24 +273,8 @@ class Qwirkle {
             return false;
         }
     }
+    */
 
-
-    playTile(tile, x, y){
-        let ret = false;
-
-        if (!this.firstTilePlayed){
-            if (this.playFirstTile(tile, x, y)){
-                ret = true;
-                this.firstTilePlayed = true;
-            }
-        }
-        // Location must be empty. Must be next to a tile. Must meet adjacency requirements. 
-        // Check if empty
-        else {
-            ret = this.playNormalTile(tile, x, y);
-        }
-        return ret;
-    }
 
     checkAxis(tile, x, y){
         // If we run into the edge of board or an empty grid without seeing an invalid tile return true. 
@@ -294,15 +289,6 @@ class Qwirkle {
         */
     }
 
-    getColorIndex(color){
-        console.log(`getting color index for ${color}`);
-        return colors.indexOf(color);
-    }
-    
-    getShapeIndex(shape){
-        console.log(`getting shape index for ${shape}`);
-        return shapes.indexOf(shape);
-    }
 }
 
 

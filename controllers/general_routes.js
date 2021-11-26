@@ -203,7 +203,7 @@ router.post('/login',(req,res)=>{
             bcrypt.compare(password, doc.password).then((result)=>{
                 if(result){
                     req.session.userInfo = doc;
-                    console.log('gameID'+req.query.gameId);
+                    //console.log('gameID'+req.query.gameId);
                     if (gameId){
                         res.redirect('game/join?id='+gameId);
                     }

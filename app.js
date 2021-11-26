@@ -106,8 +106,7 @@ io.on("connection", function (socket) {
       socket.join(gameID);
       playerCount++;
 
-
-      rList[gameID].players.push[username];
+      rList[gameID].addPlayer(username);
 
       socket.emit('room-joined', {id: gameID, count: playerCount});
       //io.to(gameID).emit('room-joined', {id: gameID, count: playerCount});
@@ -127,7 +126,6 @@ io.on("connection", function (socket) {
   });
 
   // Implement Unready
-  let tileArray = [];
   socket.on("start-game", (data) => {
     const { gameID, playerID } = data;
     // Add check for readiness later
@@ -144,12 +142,12 @@ io.on("connection", function (socket) {
       io.to(gameID).emit("init-scoreboard");
 
       for (let i in rList[gameID].players) {
-        console.log("Player ID: " + playerID);
-        console.log(i + ": " + rList[gameID].players[i]);
+        let tileArray = [];
 
-        for (let j = 0; j < 6; j++) {
+        for (let j = 0; j < 12; j++) {
           tileArray.push(rList[gameID].dealTile());
         }
+        console.log(`Dealing ${tileArray} to ${rList[gameID].players[i]}`);
         io.to(gameID).emit("draw-tile", {
           target: rList[gameID].players[i],
           tileArray: tileArray,
@@ -160,15 +158,14 @@ io.on("connection", function (socket) {
 
   socket.on("tile-swap", (data) => {
     const { gameID, playerID, tiles } = data;
-    console.log(
-      `gameID: ${gameID}, playerID: ${playerID}, swapTileArray: ${tiles}`
-    );
-    console.log("TILEARRAY");
-    console.log(tileArray);
+    //console.log(`gameID: ${gameID}, playerID: ${playerID}, swapTileArray: ${tiles}`);
+    //console.log("TILEARRAY");
+    //console.log(tileArray);
     // const colorNum = rList[gameID].getColorIndex(color);
     // const shapeNum = rList[gameID].getShapeIndex(shape);
     // const tileNum = parseInt(""+colorNum+shapeNum);
     let swappedTiles = [];
+    let tileArray = tiles;
     for (let i = 0; i < tiles.length; i++) {
       const tileIndex = tileArray.indexOf(tiles[i]);
       console.log("TILEINDESX: " + tileIndex);
@@ -185,12 +182,22 @@ io.on("connection", function (socket) {
     console.log(tileArray);
   });
 
+  socket.on('client-end-turn', data =>{
+    const {gameID, playerID, tiles} = data;
+    socket.emit("deal-swapped-tiles", { swappedTiles: swappedTiles });
+  })
+  let i = 0;
   socket.on('client-play-tile', data =>{
     const {gameID, playerID, tile, gridCoords, absCoords} = data;
     const {x, y} = gridCoords;
-    console.log(`Playing Tile ${tile} to (${x}, ${y})`);
-    if (rList[gameID].playTile(tile, x, y))
+    //console.log(`Playing Tile ${tile} to (${x}, ${y})`);
+    let b = rList[gameID].playTile(tile, x, y);
+    
+    console.log(i + ": " + b);
+    i++;
+    if (b){
       io.to(gameID).emit('server-play-tile', {gameID, playerID, tile, gridCoords, absCoords});
+    }
   });
 
   socket.on("disconnect", function () {
