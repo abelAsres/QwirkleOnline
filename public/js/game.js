@@ -14,6 +14,18 @@ var playerID = ""; // Temporary variable, will be replaced with username when it
 var playerNum; 
 let playerStatus = false; 
 
+let yPositon = 650;
+let xPosition = 0;
+let boardX;
+let boardY;
+
+let boardPlay = false;
+let selectedColor = [];
+let selectedShape = [];
+const colors = ["Yellow", "Blue", "Red", "Orange", "Purple", "Green"];
+const shapes = ["Circle", "Cross", "Diamond", "Square", "Star", "Triangle"];
+
+
 function CopyToClipboard() {
   /* Get the text field */
   var copyText = document.getElementById("copy-invite-button");
@@ -72,10 +84,25 @@ socket.on("room-joined", (data) => {
   console.log(`Player ${playerNum} has joined game #${gameID}`);
 });
 
-socket.on('start-game', (data) => {
-    console.log("Start Game 2");
-    startGame2();
+socket.on('server-start-game', (players) => {
+  document.getElementById("title-gamepage").style = "display: none";
+  document.getElementById("gInvite").style = "display: none";
+  document.getElementById("startBtns").style = "display: none";
+
+  grid.on("mousedown", playTile);
+
+  initScoreboard(players);
+
 });
+
+function initScoreboard(playerList) {
+  for (let i = 1; i <= playerList.length; i++) {
+    $("#player-" + i + "S").replaceWith(
+      "<td id=player-" + i + "S>0</td>"
+    );
+  }
+}
+
 
 socket.on('ready-status', (data) => {
 
@@ -83,7 +110,6 @@ socket.on('ready-status', (data) => {
 
 function startGame(){
     console.log('Start game has been pressed');
-    grid.on("mousedown", playTile);
     socket.emit('start-game', {gameID: gameID, playerID: playerID});
     /*
     grid.on('mousedown', (evt) => {
@@ -98,14 +124,25 @@ function startGame(){
     */
 }
 
-function startGame2(){
-    socket.emit('start-game', {gameID: gameID, playerID: playerID});
+//
+socket.on("update-player-list", data => {
+  const {gameID, playerList} = data;
+  UpdatePlayerList(playerList);
+});
+
+// Currently incomplete
+function UpdatePlayerList(playerList) {
+  console.log(playerList);
+  for (let i = 1; i <= playerList.length; i++) {
+    $("#player-" + i).replaceWith(
+      "<td id=player-" + i + ">" + playerList[i - 1] + "</td>"
+    );
+    $("#player-" + i + "S").replaceWith(
+      "<td id=player-" + i + "S>Not Ready</td>"
+    );
+  }
 }
 
-//
-socket.on("update-player-list", (count) => {
-  UpdatePlayerList(count);
-});
 
 function ready() {
   if (playerStatus) {
@@ -128,20 +165,36 @@ socket.on("update-player-status", (playerNum) => {
 
 socket.on('server-play-tile', data =>{
     const {playerID, tile, gridCoords, absCoords} = data;
-    placeSelectedTile2(absCoords.x, absCoords.y);
+    if (this.playerID == playerID)
+      placeSelectedTile2(absCoords.x, absCoords.y);
+    else
+      placeSelectedTile3(tile, absCoords.x, absCoords.y);
 });
-let i = 0;
 
 function playTile(e){
-  console.log(i + ": Play Tile Called");
-  i++;
-  let tile = tileENUM2(selectedTile.shape, selectedTile.color);
+    let tile = tileENUM2(selectedTile.shape, selectedTile.color);
     let mouseCoords = e.data.global;
     let absCoords = {x: mouseCoords.x, y: mouseCoords.y}
     let gridCoords = grid.getCellCoordinates(mouseCoords.x, mouseCoords.y);
 
     socket.emit('client-play-tile', {gameID, playerID, tile, gridCoords, absCoords})
 }
+
+function placeSelectedTile3(tile, x, y){
+  let pos = grid.getCellCorner(x, y);
+  boardPlay = true;
+  selectedColor = [];
+  selectedShape = [];
+  selectedShape.push(tile % 10);
+  selectedColor.push(Math.floor(tile / 10));
+
+  boardX = pos.x;
+  boardY = pos.y;
+
+  loader.load(drawTile);
+  boardPlay = false;
+}
+
 
 function placeSelectedTile(e){
     let pos = e.data.global;
@@ -214,7 +267,6 @@ socket.on("draw-single-tile", (data) => {
 
 socket.on("deal-swapped-tiles", (data) => {
   const { swappedTiles } = data;
-  //let i = 0;
 
   for (let i = 0; i < swappedTiles.length; i++) {
     //swapTileArray.forEach((tile) => {
@@ -228,17 +280,6 @@ socket.on("deal-swapped-tiles", (data) => {
 
   swapTileArray = [];
 });
-// Currently incomplete
-function UpdatePlayerList(count) {
-  for (let i = 1; i <= count; i++) {
-    $("#player-" + i).replaceWith(
-      "<td id=player-" + i + ">Player " + i + "</td>"
-    );
-    $("#player-" + i + "S").replaceWith(
-      "<td id=player-" + i + "S>Not Ready</td>"
-    );
-  }
-}
 
 const loader = PIXI.Loader.shared;
 
@@ -251,8 +292,6 @@ const shapesTileSheet = [
   "images/trianglespritesheet.json",
 ];
 
-let yPositon = 650;
-let xPosition = 0;
 
 function onDragStart(event) {
   // store a reference to the data
@@ -278,10 +317,6 @@ function onDragMove() {
   }
 }
 
-let selectedColor = [];
-let selectedShape = [];
-const colors = ["Yellow", "Blue", "Red", "Orange", "Purple", "Green"];
-const shapes = ["Circle", "Cross", "Diamond", "Square", "Star", "Triangle"];
 
 function getSingleTile(tile) {
   selectedColor = [];
@@ -337,26 +372,26 @@ function drawTile(loader, resources) {
       `${shapes[selectedShape[i]]}${colors[selectedColor[i]]}Tile.png`
     );
     let sprite = new PIXI.Sprite(texture);
-
+    
     //store color and shape to easily see what the tile features are
     sprite.color = colors[selectedColor[i]];
     sprite.shape = shapes[selectedShape[i]];
 
     //sprite.eNum is used by game logic to represent tile features
     sprite.eNum = tileENUM(sprite.color, sprite.shape);
-    sprite.position.set(xPosition, yPositon);
-    xPosition += 63;
+    
+    if (boardPlay){
+      sprite.position.set(boardX, boardY);
+    }
+    else {
+      sprite.position.set(xPosition, yPositon);
+      xPosition += 63;
 
-    sprite.interactive = true;
-    sprite.buttonMode = true;
-    sprite.anchor.set = 0.5;
-
-    sprite.on("pointertap", tileClicked);
-
-    // sprite.on('pointerdown', onDragStart)
-    // .on('pointerup', onDragEnd)
-    // .on('pointerupoutside', onDragEnd)
-    // .on('pointermove', onDragMove);
+      sprite.interactive = true;
+      sprite.buttonMode = true;
+      sprite.anchor.set = 0.5;
+      sprite.on("pointertap", tileClicked);
+    }
 
     app.stage.addChild(sprite);
   }
@@ -451,8 +486,9 @@ function tileClicked(event) {
 }
 
 function endTurn(){
-  socket.emit("client-end-turn", {gameID, playerID, tiles});
-
+  let tiles = "";
+  let action = "end";
+  socket.emit("client-end-turn", {gameID, playerID, tiles, action});
 }
 
 function swapTiles() {
