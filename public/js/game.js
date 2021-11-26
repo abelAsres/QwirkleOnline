@@ -9,9 +9,9 @@ const socket = io();
 
 var playerList = [];
 let gameID; // = document.getElementById('copy-invite-button').innerText;
-
 var playerID = ""; // Temporary variable, will be replaced with username when it becomes available.
 var playerNum; 
+let playerCount;
 let playerStatus = false; 
 
 let yPositon = 650;
@@ -25,6 +25,11 @@ let selectedShape = [];
 const colors = ["Yellow", "Blue", "Red", "Orange", "Purple", "Green"];
 const shapes = ["Circle", "Cross", "Diamond", "Square", "Star", "Triangle"];
 
+let swap = false;
+let line;
+let selectedTile = PIXI.Sprite();
+let swapTileArray = [];
+let playTileArray = [];
 
 function CopyToClipboard() {
   /* Get the text field */
@@ -96,13 +101,16 @@ socket.on('server-start-game', (players) => {
 });
 
 function initScoreboard(playerList) {
+  playerCount = playerList.length;
   for (let i = 1; i <= playerList.length; i++) {
-    $("#player-" + i + "S").replaceWith(
-      "<td id=player-" + i + "S>0</td>"
-    );
+    $("#player-" + i + "S").replaceWith("<td id=player-" + i + "S>0</td>");
+    if (i == 1){
+      let p = document.getElementById("player-" + i);
+      p.style.color = "red";
+      p.style.fontWeight = "bold";
+    }
   }
 }
-
 
 socket.on('ready-status', (data) => {
 
@@ -134,15 +142,47 @@ socket.on("update-player-list", data => {
 function UpdatePlayerList(playerList) {
   console.log(playerList);
   for (let i = 1; i <= playerList.length; i++) {
-    $("#player-" + i).replaceWith(
-      "<td id=player-" + i + ">" + playerList[i - 1] + "</td>"
-    );
-    $("#player-" + i + "S").replaceWith(
-      "<td id=player-" + i + "S>Not Ready</td>"
-    );
+    $("#player-" + i).replaceWith("<td id=player-" + i + ">" + playerList[i - 1] + "</td>");
+    $("#player-" + i + "S").replaceWith("<td id=player-" + i + "S>Not Ready</td>");
   }
 }
 
+socket.on('server-end-turn', (data) => {
+  const {playerID, turnID} = data;
+  updateCurrentPlayer(turnID)
+});
+
+function updateCurrentPlayer(turnID){
+  turnID++;
+
+  for (let i = 1; i <= playerCount; i++){
+    if (i != turnID){
+      let p = document.getElementById("player-" + i);
+      p.style.color = "black";
+      p.style.fontWeight = "normal";
+    }
+    else {
+      let p = document.getElementById("player-" + turnID);
+      p.style.color = "red";
+      p.style.fontWeight = "bold";
+    }
+  }
+}
+
+socket.on("server-replenish-tile", (data)=>{
+  const {playerID, tileArray} = data;
+  if (this.playerID = playerID){
+    for (let i = 0; i < tileArray.length; i++){
+      xPosition = playTileArray[i].x;
+      yPosition = playTileArray[i].y;
+
+      getSingleTile(tileArray[i]);
+    }
+
+    playTileArray = [];
+    socket.emit("client-end-turn", {gameID, playerID});
+  }
+});
 
 function ready() {
   if (playerStatus) {
@@ -162,9 +202,10 @@ socket.on("update-player-status", (playerNum) => {
   );
 });
 
-
 socket.on('server-play-tile', data =>{
     const {playerID, tile, gridCoords, absCoords} = data;
+    //playTileArray.push(tile, gridCoords);
+
     if (this.playerID == playerID)
       placeSelectedTile2(absCoords.x, absCoords.y);
     else
@@ -177,6 +218,7 @@ function playTile(e){
     let absCoords = {x: mouseCoords.x, y: mouseCoords.y}
     let gridCoords = grid.getCellCoordinates(mouseCoords.x, mouseCoords.y);
 
+    console.log(`Playing tile ${tile} to ${gridCoords.x}, ${gridCoords.y}`);
     socket.emit('client-play-tile', {gameID, playerID, tile, gridCoords, absCoords})
 }
 
@@ -195,28 +237,17 @@ function placeSelectedTile3(tile, x, y){
   boardPlay = false;
 }
 
-
-function placeSelectedTile(e){
-    let pos = e.data.global;
-    pos = grid.getCellCorner(pos.x, pos.y);
-
-    selectedTile.x = pos.x;
-    selectedTile.y = pos.y;
-    app.stage.removeChild(line);
-    selectedTile.alpha = 1;
-    selectedTile = PIXI.Sprite();
-}
-
 function placeSelectedTile2(x, y){
-    let pos = grid.getCellCorner(x, y);
-    console.log(pos);
+  let pos = grid.getCellCorner(x, y);
+  console.log(pos);
+  playTileArray.push({x: selectedTile.x, y: selectedTile.y});
 
-    selectedTile.x = pos.x;
-    selectedTile.y = pos.y;
-    app.stage.removeChild(line);
-    selectedTile.alpha = 1;
-    selectedTile.interactive = false;
-    selectedTile = PIXI.Sprite();
+  selectedTile.x = pos.x;
+  selectedTile.y = pos.y;
+  app.stage.removeChild(line);
+  selectedTile.alpha = 1;
+  selectedTile.interactive = false;
+  selectedTile = PIXI.Sprite();
 }
 
 function tileENUM2(shape, color){
@@ -269,17 +300,15 @@ socket.on("deal-swapped-tiles", (data) => {
   const { swappedTiles } = data;
 
   for (let i = 0; i < swappedTiles.length; i++) {
-    //swapTileArray.forEach((tile) => {
     xPosition = swapTileArray[i].x;
     yPosition = swapTileArray[i].y;
     getSingleTile(swappedTiles[i]);
     app.stage.removeChild(swapTileArray[i]);
-    //loader.load(drawTile);
-    //});
   }
 
   swapTileArray = [];
 });
+
 
 const loader = PIXI.Loader.shared;
 
@@ -291,7 +320,6 @@ const shapesTileSheet = [
   "images/starspritesheet.json",
   "images/trianglespritesheet.json",
 ];
-
 
 function onDragStart(event) {
   // store a reference to the data
@@ -316,7 +344,6 @@ function onDragMove() {
     this.y = newPosition.y;
   }
 }
-
 
 function getSingleTile(tile) {
   selectedColor = [];
@@ -364,7 +391,6 @@ function getTileAtRandom() {
   }
 }
 
-
 function drawTile(loader, resources) {
   console.log(resources);
   for (let i in selectedColor) {
@@ -398,16 +424,6 @@ function drawTile(loader, resources) {
   loader.reset();
 }
 
-
-function drawTile2 (tileNum) {
-    selectedColor = colors[Math.floor(tileNum/10)];
-    selectedShape = shapes[tileNum%10];
-    
-    console.log("DrawTile2: " + selectedColor + " " + selectedShape);
-}
-
-let swap = false;
-
 function intiateSwap() {
   swap = !swap;
   let confirmSwapBtn = document.getElementById("swapTilesBtn");
@@ -429,7 +445,6 @@ function intiateSwap() {
   }
 }
 
-let line;
 function showSelection(c1, c2, color) {
   line = new PIXI.Graphics();
   line
@@ -445,15 +460,12 @@ function showSelection(c1, c2, color) {
   app.stage.addChild(line);
 }
 
-let selectedTile = PIXI.Sprite();
-let swapTileArray = [];
-
 function tileClicked(event) {
   if (swap) {
     //if the tile has been selected already remove it from tile selection
     //other wise add it to tile swap selection
     const tileIndex = swapTileArray.indexOf(this);
-    console.log("TILEINDEX: " + tileIndex);
+    //console.log("TILEINDEX: " + tileIndex);
     if (tileIndex > -1) {
       swapTileArray.splice(tileIndex, 1);
       this.alpha = 1;
@@ -486,9 +498,13 @@ function tileClicked(event) {
 }
 
 function endTurn(){
-  let tiles = "";
-  let action = "end";
-  socket.emit("client-end-turn", {gameID, playerID, tiles, action});
+  let replenishNum = playTileArray.length;
+  if (replenishNum > 0){
+    socket.emit("client-end-play", {gameID, playerID, replenishNum});
+  }
+  else {
+    socket.emit("client-end-turn", {gameID, playerID});
+  }
 }
 
 function swapTiles() {

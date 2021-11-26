@@ -92,6 +92,7 @@ class Qwirkle {
     }
 
     playNormalTile(tile, x, y){
+        console.log("Determining if Play is Valid");
         // If this space is empty find the non empty neighbours. 
         if (this.board[x][y] == -1) {
             let neighbour = [];
@@ -158,6 +159,7 @@ class Qwirkle {
             this.printBoard();
             return true;
         }
+        console.log("6: ????");
         return false;
     }
     

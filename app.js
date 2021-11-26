@@ -188,8 +188,23 @@ io.on("connection", function (socket) {
   });
 
   socket.on('client-end-turn', data =>{
-    const {gameID, playerID, tiles, action} = data;
+    const {gameID, playerID} = data;
     rList[gameID].endTurn();
+    let turnID = rList[gameID].turn;
+    console.log("Turn ID is " + turnID);
+    io.to(gameID).emit("server-end-turn", {playerID, turnID});
+    //socket.emit("deal-swapped-tiles", { swappedTiles: swappedTiles });
+  })
+
+  socket.on('client-end-play', data =>{
+    const {gameID, playerID, replenishNum} = data;
+    let tileArray = [];
+
+    for (let i = 0; i < replenishNum; i++) {
+      tileArray.push(rList[gameID].dealTile());
+    }
+    rList[gameID].endTurn();
+    io.to(gameID).emit("server-replenish-tile", {playerID, tileArray});
     //socket.emit("deal-swapped-tiles", { swappedTiles: swappedTiles });
   })
 
