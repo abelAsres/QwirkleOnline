@@ -59,7 +59,7 @@ class Qwirkle {
     playFirstTile(tile, x, y) {
         let ret = false;
 
-        if (x == 4 & y == 4) {
+        if (x == 4 & y == 4 && this.board[x][y] == -1){
             this.tileQ.push([tile, x, y]);
             this.board[x][y] = tile;
             this.firstTilePlayed = true;

@@ -12,7 +12,7 @@ let gameID; // = document.getElementById('copy-invite-button').innerText;
 var playerID = ""; // Temporary variable, will be replaced with username when it becomes available.
 var playerNum; 
 let playerCount;
-let playerStatus = false; 
+//let playerStatus = false; 
 
 let yPositon = 650;
 let xPosition = 0;
@@ -184,14 +184,13 @@ socket.on("server-replenish-tile", (data)=>{
   }
 });
 
-function ready() {
-  if (playerStatus) {
-    playerStatus = false;
 
-    socket.emit("unready", { gameID: gameID, playerID: playerNum });
-  } else {
-    playerStatus = true;
+function ready() {
+  let status = updatePlayerStatus();
+  if (status) {
     socket.emit("ready", { gameID: gameID, playerID: playerNum });
+  } else {
+      socket.emit("unready", { gameID: gameID, playerID: playerNum });
   }
 }
 
@@ -406,7 +405,7 @@ function drawTile(loader, resources) {
     sprite.shape = shapes[selectedShape[i]];
 
     //sprite.eNum is used by game logic to represent tile features
-    sprite.eNum = tileENUM(sprite.color, sprite.shape);
+    sprite.eNum = tileENUM2(sprite.shape,sprite.color,);
     
     if (boardPlay){
       sprite.position.set(boardX, boardY);
@@ -438,28 +437,13 @@ function intiateSwap() {
       selectedTile = PIXI.Sprite();
     }
   } else {
-    swapTileArray.forEach((element) => {
-      element.alpha = 1;
+    swapTileArray.forEach((tile) => {
+      tile.alpha = 1;
     });
     swapTileArray = [];
     confirmSwapBtn.style.display = "none";
     swapButton.innerHTML = "Swap Tiles";
   }
-}
-
-function showSelection(c1, c2, color) {
-  line = new PIXI.Graphics();
-  line
-    .lineStyle(5, color, 1)
-    .moveTo(c1, c2)
-    .lineTo(c1, c2 + 63)
-    .moveTo(c1, c2)
-    .lineTo(c1 + 63, c2)
-    .moveTo(c1, c2 + 63)
-    .lineTo(c1 + 63, c2 + 63)
-    .moveTo(c1 + 63, c2 + 63)
-    .lineTo(c1 + 63, c2);
-  app.stage.addChild(line);
 }
 
 function tileClicked(event) {
@@ -511,8 +495,6 @@ function endTurn(){
 
 function swapTiles() {
   if (swapTileArray.length > 0) {
-    console.log("attempting to swap tiles");
-    console.log(swapTileArray);
     let tileENums = [];
     swapTileArray.forEach((tile) => {
       tileENums.push(tile.eNum);
@@ -534,14 +516,6 @@ function placeSelectedTile(e) {
   app.stage.removeChild(line);
   selectedTile.alpha = 1;
   selectedTile = PIXI.Sprite();
-}
-
-function tileENUM(color, shape) {
-  console.log("TILEENUM FUNCTION");
-  console.log("" + color + shape);
-  let colorNum = colors.indexOf(color);
-  let shapeNum = shapes.indexOf(shape);
-  return parseInt("" + colorNum + shapeNum);
 }
 
 // throughout the process multiple signals can be dispatched.
@@ -591,3 +565,30 @@ function setup(loader,resources){
     }
 }
 */
+
+
+/*function tileENUM(color, shape) {
+  console.log("TILEENUM FUNCTION");
+  console.log("" + color + shape);
+  let colorNum = colors.indexOf(color);
+  let shapeNum = shapes.indexOf(shape);
+  return parseInt("" + colorNum + shapeNum);
+
+function showSelection(c1, c2, color) {
+  line = new PIXI.Graphics();
+  line
+    .lineStyle(5, color, 1)
+    .moveTo(c1, c2)
+    .lineTo(c1, c2 + 63)
+    .moveTo(c1, c2)
+    .lineTo(c1 + 63, c2)
+    .moveTo(c1, c2 + 63)
+    .lineTo(c1 + 63, c2 + 63)
+    .moveTo(c1 + 63, c2 + 63)
+    .lineTo(c1 + 63, c2);
+  app.stage.addChild(line);
+}
+
+
+
+}*/
