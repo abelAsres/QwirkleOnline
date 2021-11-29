@@ -171,7 +171,7 @@ function updateCurrentPlayer(turnID){
 
 socket.on("server-replenish-tile", (data)=>{
   const {playerID, tileArray} = data;
-  if (this.playerID = playerID){
+  if (this.playerID == playerID){
     for (let i = 0; i < tileArray.length; i++){
       xPosition = playTileArray[i].x;
       yPosition = playTileArray[i].y;
@@ -208,8 +208,10 @@ socket.on('server-play-tile', data =>{
 
     if (this.playerID == playerID)
       placeSelectedTile2(absCoords.x, absCoords.y);
-    else
+    else{
+      console.log("Other Player Display");
       placeSelectedTile3(tile, absCoords.x, absCoords.y);
+    }
 });
 
 function playTile(e){
