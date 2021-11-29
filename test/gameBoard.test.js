@@ -31,4 +31,37 @@ describe('deck and board after game started', ()=>{
         //expect(game.deck.length).toBe(108 - (game.players.length * 6) - 1);
         done();
     })
+
+    test('place first tile on grid', (done)=>{
+        //invalid play
+        let played = game.playFirstTile(55,4,5);
+        expect(game.board[4][4]).toBe(-1);
+        expect(played).toBe(false);
+        //valid play
+        played = game.playFirstTile(55,4,4);
+        expect(game.board[4][4]).toBe(55);
+        expect(played).toBe(true);
+        //call again
+        played = game.playFirstTile(54,4,4);
+        expect(game.board[4][4]).toBe(55);
+        expect(played).toBe(false);
+        done();
+    })
+
+    test('continue to play tiles', (done)=>{
+        let played = game.playNormalTile(54,4,5);
+        expect(game.board[4][4]).toBe(55);
+        //play valid tile next door
+        expect(game.board[4][5]).toBe(54);
+        expect(played).toBe(true);
+        //play tile on coordinate already used
+        played = game.playNormalTile(52,4,5);
+        expect(game.board[4][5]).toBe(54);
+        expect(played).toBe(false);
+        //play invalid tile next door
+        played = game.playNormalTile(54,4,3);
+        expect(game.board[4][3]).toBe(-1);
+        expect(played).toBe(false);
+        done();
+    })
 })
