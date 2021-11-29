@@ -11,7 +11,7 @@ class Qwirkle {
         this.start = false;
         this.fistTilePlayed = false;
         this.players.push(userName);
-        this.width = 9;
+        this.width = 31;
 
         this.tileQ = [];
         this.turnAxis;
@@ -19,9 +19,9 @@ class Qwirkle {
 
     startGame() {
         // Create a new gameboard
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < this.width; i++) {
             this.board.push(new Array);
-            for (let j = 0; j < 10; j++) {
+            for (let j = 0; j < this.width; j++) {
                 this.board[i].push(-1);
             }
         }
@@ -59,7 +59,7 @@ class Qwirkle {
     playFirstTile(tile, x, y) {
         let ret = false;
 
-        if (x == 4 & y == 4 && this.board[x][y] == -1){
+        if (x == 15 & y == 15 && this.board[x][y] == -1){
             this.tileQ.push([tile, x, y]);
             this.board[x][y] = tile;
             this.firstTilePlayed = true;
