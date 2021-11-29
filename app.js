@@ -203,7 +203,6 @@ io.on("connection", function (socket) {
     for (let i = 0; i < replenishNum; i++) {
       tileArray.push(rList[gameID].dealTile());
     }
-    rList[gameID].endTurn();
     io.to(gameID).emit("server-replenish-tile", {playerID, tileArray});
     //socket.emit("deal-swapped-tiles", { swappedTiles: swappedTiles });
   })

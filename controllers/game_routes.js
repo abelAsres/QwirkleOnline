@@ -21,6 +21,18 @@ router.get('/join/:id?',isAuthenticated, (req, res) => {
     
 });
 
+router.get('/play',isAuthenticated, (req, res) => {
+    //res.redirect('/game');
+    
+    res.render('game/play',{
+        title:'Game Page',
+        style: 'game.css',
+        gameID: req.query.id,
+        user: req.session.userInfo
+    });
+    
+});
+
 router.get('/',isAuthenticated,(req,res)=>{
     //create invitation
     // let newDiv = document.createElement("div");
