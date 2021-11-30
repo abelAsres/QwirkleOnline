@@ -108,14 +108,14 @@ io.on("connection", function (socket) {
 
       rList[gameID].addPlayer(username);
 
-      socket.emit('room-joined', {id: gameID, count: playerCount});
+      socket.emit('room-joined', { id: gameID, count: playerCount });
       //io.to(gameID).emit('room-joined', {id: gameID, count: playerCount});
 
       // Query which players are in the current channel.
       // Update room info.
       playerList = rList[gameID].players;
       console.log(playerList);
-      io.to(gameID).emit("update-player-list", {gameID, playerList});
+      io.to(gameID).emit("update-player-list", { gameID, playerList });
     }
     // If more than 4 players don't connect and send him outside.
     else {
@@ -169,56 +169,62 @@ io.on("connection", function (socket) {
     // const colorNum = rList[gameID].getColorIndex(color);
     // const shapeNum = rList[gameID].getShapeIndex(shape);
     // const tileNum = parseInt(""+colorNum+shapeNum);
-    let swappedTiles = [];
-    let tileArray = tiles;
-    for (let i = 0; i < tiles.length; i++) {
-      const tileIndex = tileArray.indexOf(tiles[i]);
-      console.log("TILEINDESX: " + tileIndex);
-      if (tileIndex > -1) {
-        console.log("removing tile");
-        tileArray.splice(tileIndex, 1);
+    if (turnCheck(gameID, playerID)) {
+      let swappedTiles = [];
+      let tileArray = tiles;
+      for (let i = 0; i < tiles.length; i++) {
+        const tileIndex = tileArray.indexOf(tiles[i]);
+        console.log("TILEINDESX: " + tileIndex);
+        if (tileIndex > -1) {
+          console.log("removing tile");
+          tileArray.splice(tileIndex, 1);
+        }
+        tileArray.push(rList[gameID].dealTile());
+        swappedTiles.push(tileArray[tileArray.length - 1]);
       }
-      tileArray.push(rList[gameID].dealTile());
-      swappedTiles.push(tileArray[tileArray.length - 1]);
-    }
-    socket.emit("deal-swapped-tiles", { swappedTiles: swappedTiles });
+      socket.emit("deal-swapped-tiles", { swappedTiles: swappedTiles });
 
-    console.log(rList[gameID].deck);
-    console.log(tileArray);
+      console.log(rList[gameID].deck);
+      console.log(tileArray);
+    }
   });
 
-  socket.on('client-end-turn', data =>{
-    const {gameID, playerID, action} = data;
+  socket.on('client-end-turn', data => {
+    const { gameID, playerID, action } = data;
 
-    if (action == "no-more-plays") rList[gameID].noMorePlaySignal();
-    
-    let score = rList[gameID].endTurn();
-    let endGame = rList[gameID].endGameCheck(false);
+    if (turnCheck(gameID, playerID)) {
+      if (action == "no-more-plays") rList[gameID].noMorePlaySignal();
 
-    let turnID = rList[gameID].turn;
-    let count = rList[gameID].players.length;
+      let score = rList[gameID].endTurn();
+      let endGame = rList[gameID].endGameCheck(false);
 
-    io.to(gameID).emit("server-end-turn", {playerID, turnID, score, count, endGame});
+      let turnID = rList[gameID].turn;
+      let count = rList[gameID].players.length;
+
+      if (endGame) io.to(gameID).emit("server-end-game", { playerID, turnID, count });;
+
+      io.to(gameID).emit("server-end-turn", { playerID, turnID, score, count, endGame });
+    }
   })
 
-  socket.on('client-end-play', data =>{
-    const {gameID, playerID, replenishNum} = data;
+  socket.on('client-end-play', data => {
+    const { gameID, playerID, replenishNum } = data;
     let tileArray = [];
 
     for (let i = 0; i < replenishNum; i++) {
       tileArray.push(rList[gameID].dealTile());
     }
-    io.to(gameID).emit("server-replenish-tile", {playerID, tileArray});
+    io.to(gameID).emit("server-replenish-tile", { playerID, tileArray });
     //socket.emit("deal-swapped-tiles", { swappedTiles: swappedTiles });
   })
 
-  socket.on('client-play-tile', data =>{
-    const {gameID, playerID, tile, gridCoords, absCoords} = data;
-    const {x, y} = gridCoords;
+  socket.on('client-play-tile', data => {
+    const { gameID, playerID, tile, gridCoords, absCoords } = data;
+    const { x, y } = gridCoords;
 
     //console.log(`Playing Tile ${tile} to (${x}, ${y})`);
-    if (turnCheck(gameID, playerID) && rList[gameID].playTile(tile, x, y)){
-      io.to(gameID).emit('server-play-tile', {gameID, playerID, tile, gridCoords, absCoords});
+    if (turnCheck(gameID, playerID) && rList[gameID].playTile(tile, x, y)) {
+      io.to(gameID).emit('server-play-tile', { gameID, playerID, tile, gridCoords, absCoords });
     }
   });
 
@@ -232,9 +238,9 @@ io.on("connection", function (socket) {
   });
 });
 
-function turnCheck(gameID, playerID){
+function turnCheck(gameID, playerID) {
   let turn = rList[gameID].turn;
-  if (rList[gameID].players[turn] == playerID){
+  if (rList[gameID].players[turn] == playerID) {
     return true;
   }
   else {

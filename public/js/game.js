@@ -110,6 +110,60 @@ socket.on('server-start-game', (players) => {
   grid.on("mousedown", playTile);
 });
 
+socket.on('server-end-game', (data) => {
+  const {playerID, turnID, count} = data;
+
+  finalScoreboard(count);
+
+  document.getElementById("game-app").style = "display: none";
+  document.getElementById("gameBtns").style = "display: none";
+  document.getElementById("scoreboard").style = "display: none";
+  
+  document.getElementById("end-game-text").style = "display: block";
+  document.getElementById("end-game-table").style = "display: block";
+});
+
+function finalScoreboard(count){
+  let psa = [];
+  let scoreboard = document.getElementById("end-game-table");
+  let table = document.createElement("table");
+  let tbdy = document.createElement("tbody");
+  let tr = document.createElement('tr');
+
+  table.setAttribute('id', 'end-table');
+
+  for (let i = 0; i < count; i++){
+    let name = document.getElementById(`player-${i}`).innerText;
+    let score = document.getElementById(`score-${i}`).innerText;
+
+    psa.push({name, score});
+  }
+
+  psa.sort((a, b) => {return b.score - a.score});
+
+  for (let i = 0; i < count; i++){
+    console.log(`${psa[i].name}: ${psa[i].score}`);
+    let td = document.createElement('td');
+    td.appendChild(document.createTextNode(psa[i].name));
+    td.setAttribute('id', `player-${i}`)
+    tr.appendChild(td);
+  }
+
+  tbdy.appendChild(tr);
+  tr = document.createElement('tr');
+
+  for (let i = 0; i < count; i++){
+    let td = document.createElement('td');
+    td.appendChild(document.createTextNode(psa[i].score));
+    td.setAttribute('id', `score-${i}`)
+    tr.appendChild(td);
+  }
+
+  tbdy.appendChild(tr);
+  table.appendChild(tbdy);
+  scoreboard.appendChild(table);
+}
+
 function initScoreboard(playerList){
   count = playerList.length;
   let scoreboard = document.getElementById("scoreboard");
@@ -170,8 +224,8 @@ socket.on("update-player-list", data => {
 function UpdatePlayerList(playerList) {
   console.log(playerList);
   for (let i = 1; i <= playerList.length; i++) {
-    $("#player-" + i).replaceWith("<td id=player-" + i + ">" + playerList[i - 1] + "</td>");
-    $("#player-" + i + "S").replaceWith("<td id=player-" + i + "S>Not Ready</td>");
+    $("#p-" + i).replaceWith("<td id=p-" + i + ">" + playerList[i - 1] + "</td>");
+    $("#p-" + i + "S").replaceWith("<td id=p-" + i + "S>Not Ready</td>");
   }
 }
 
@@ -182,10 +236,15 @@ socket.on('server-end-turn', (data) => {
   else endOfTurnUpdate(turnID, score, count);
 });
 
-function endOfTurnUpdate(turnID, score){
+function endOfTurnUpdate(turnID, score, count){
   console.log(`Turn ID is ${turnID}... Score is ${score}... Count is ${count}`);
 
   for (let i = 0; i < count; i++){
+    if (turnID - 1 == i || (turnID - 1 == -1 && i == count - 1)){
+      let s = document.getElementById(`score-${i}`);
+      s.innerText = score;
+    }
+
     if (i != turnID){
       let p = document.getElementById("player-" + i);
       p.style.color = "black";
@@ -195,8 +254,6 @@ function endOfTurnUpdate(turnID, score){
       let p = document.getElementById("player-" + turnID);
       p.style.color = "red";
       p.style.fontWeight = "bold";
-      let s = document.getElementById(`score-${turnID}`);
-      s.innerText = score;
     }
   }
 }
