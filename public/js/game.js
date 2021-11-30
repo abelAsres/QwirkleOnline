@@ -1,10 +1,10 @@
 /*width: window.innerWidth, height: window.innerHeight*/
 const app = new PIXI.Application({
-  width: 760,
-  height: 760,
-  backgroundColor: 0xffffff,
+  width: 1200,
+  height: 1300,
+  backgroundColor: 0xD3D3D3,
 });
-const grid = new PixiJSGrid(630, 63);
+const grid = new PixiJSGrid(1240, 40);
 const socket = io();
 
 var playerList = [];
@@ -14,7 +14,7 @@ var playerNum;
 let playerCount;
 //let playerStatus = false; 
 
-let yPositon = 650;
+let yPositon = 1250;
 let xPosition = 0;
 let boardX;
 let boardY;
@@ -48,6 +48,19 @@ $(document).ready(function () {
 
   history.pushState(null, "", location.href.split("/join?")[0]);
 
+  // Draw and display the Grid (PixiJS App).
+  $("#game-app").append(app.view);
+  
+  let g = new PIXI.Graphics();
+  g.beginFill(0x000000);
+  g.lineStyle(1, 0x000000);
+  g.drawRect(600, 600, 40, 40);
+  app.stage.addChild(g);
+
+  grid.lineStyle({ width: 1, color: 0x000000 });
+  grid.drawGrid();
+  app.stage.addChild(grid);
+
   // Check if user came through the create button or joined.
   if (gameID == undefined || gameID == "") {
     socket.emit("create-room", playerID);
@@ -60,11 +73,6 @@ $(document).ready(function () {
     socket.emit("join-room", { gameID: gameID, username: playerID });
   }
 
-  // Draw and display the Grid (PixiJS App).
-  $("#game-app").append(app.view);
-  grid.lineStyle({ width: 1, color: 0x000000 });
-  grid.drawGrid();
-  app.stage.addChild(grid);
 });
 
 socket.on("room-created", (id) => {
@@ -90,6 +98,7 @@ socket.on("room-joined", (data) => {
 });
 
 socket.on('server-start-game', (players) => {
+
   document.getElementById("title-gamepage").style = "display: none";
   document.getElementById("gInvite").style = "display: none";
   document.getElementById("startBtns").style = "display: none";
@@ -406,13 +415,16 @@ function drawTile(loader, resources) {
 
     //sprite.eNum is used by game logic to represent tile features
     sprite.eNum = tileENUM2(sprite.shape,sprite.color,);
-    
+    sprite.width = 40;
+    sprite.height = 40;
+
+
     if (boardPlay){
       sprite.position.set(boardX, boardY);
     }
     else {
       sprite.position.set(xPosition, yPositon);
-      xPosition += 63;
+      xPosition += 40;
 
       sprite.interactive = true;
       sprite.buttonMode = true;
