@@ -45,7 +45,8 @@ class Qwirkle {
     endTurn() {
         console.log("End Turn: Score Calculation & Change Player Turn");
 
-        this.endTurnScore();
+        if(this.tileQ.length >0)
+            this.endTurnScore();
     
         this.tileQ = [];
         this.turnScore = 0;

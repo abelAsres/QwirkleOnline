@@ -102,7 +102,10 @@ socket.on('server-start-game', (players) => {
   document.getElementById("title-gamepage").style = "display: none";
   document.getElementById("gInvite").style = "display: none";
   document.getElementById("startBtns").style = "display: none";
-
+  document.getElementById("gPList").style = "display: none";
+  document.getElementById("game-app").style = "display: block";
+  document.getElementById("gameBtns").style = "display: block";
+  //document.body.style.zoom = "75%"
   grid.on("mousedown", playTile);
 
   initScoreboard(players);
@@ -442,7 +445,7 @@ function intiateSwap() {
   let confirmSwapBtn = document.getElementById("swapTilesBtn");
   let swapButton = document.getElementById("intiateSwapBtn");
   if (swap) {
-    confirmSwapBtn.style.display = "block";
+    confirmSwapBtn.style.display = "inline";
     swapButton.innerHTML = "Cancel Swap";
     if (selectedTile.alpha == 0.5) {
       selectedTile.alpha = 1;
@@ -516,6 +519,11 @@ function swapTiles() {
       playerID: playerID,
       tiles: tileENums,
     });
+    document.getElementById("swapTilesBtn").style.display = "none";
+    document.getElementById("intiateSwapBtn").innerHTML ="Swap Tiles";
+    swap = !swap;
+    endTurn();
+   
   }
 }
 
@@ -528,6 +536,10 @@ function placeSelectedTile(e) {
   app.stage.removeChild(line);
   selectedTile.alpha = 1;
   selectedTile = PIXI.Sprite();
+}
+
+function noMoreMoves(){
+  
 }
 
 // throughout the process multiple signals can be dispatched.

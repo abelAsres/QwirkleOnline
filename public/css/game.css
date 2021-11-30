@@ -13,6 +13,11 @@
     background-color: #fbf5e1 !important;
 }
 
+#game-app, #gameBtns {
+  display: none;
+}
+
+/*
 #game-app {
     margin-left: 45%;
     margin-top: -5%
@@ -25,7 +30,7 @@
 #gPList {
     margin-top: -38%
 }
-
+*/
 #copyBtn {
 	color: #fff !important;
 	text-transform: uppercase;
@@ -48,10 +53,14 @@
 	transition: all 0.4s ease 0s;
 }
 
+/*
 #startBtns {
     margin-top: -20%
-}
+}*/
 
+#swapTilesBtn {
+  display: none
+}
 table {
     border-collapse: separate !important;
 }
