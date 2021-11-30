@@ -39,8 +39,49 @@ test('check registration route', async ()=>{
 
     expect(user.userName).toBe('testuser1');
     expect(user.email).toBe('testmail@gmail.com');
-    //expect(response2.statusCode).toBe(200);
+    expect(response2.statusCode).toBe(302);
     //expect(response2.res.headers.location).toBe('/login?showModal=true');
+
+    const response3 = await request.post('/registration')
+    .send({
+        userName:"test",
+        email:"testmail@gmail.com",
+        password:"testp",
+        checkPassword:"testp"
+    });
+
+    expect(response3.statusCode).toBe(400);
+
+    const response4 = await request.post('/registration')
+    .send({
+        userName:"testuser2",
+        email:"testmail@gmail",
+        password:"testp",
+        checkPassword:"testp"
+    });
+
+    expect(response4.statusCode).toBe(400);
+
+    
+    const response5 = await request.post('/registration')
+    .send({
+        userName:"testuser2",
+        email:"testmail@gmail.com",
+        password:"testp",
+        checkPassword:"testp"
+    });
+
+    expect(response5.statusCode).toBe(400);
+
+    const response6 = await request.post('/registration')
+    .send({
+        userName:"testuser2",
+        email:"testmail@gmail.com",
+        password:"testpass1",
+        checkPassword:"testp"
+    });
+
+    expect(response6.statusCode).toBe(400);
 },60000)
 
 //testing login requests
@@ -73,15 +114,16 @@ test('check login routes', async ()=>{
                     });
      expect(response5.statusCode).toBe(302);
      expect(response5.res.headers.location).toBe('user/dashboard');
+
      
 },60000)
-/*
-test('update username', async()=>{
-  const response = await request.put('/user/update')
-                .send({
-                    userName: 'testUserUpdated',
-                    password:'testpassword1'
-                });
-    expect(response.statusCode).toBe(204);
-    expect(userModel.findOne({userName: 'testUserUpdated'}).userName).toBe('testUserUpdated');
-})*/
+
+// test('update username', async()=>{
+//     const response2 = await request.put('user/update')
+//                 .set({
+//                     userName: 'testUserUpdated',
+//                     password:'testpassword1'
+//                 });
+//     let user = userModel.findOne({email: 'testmail@gmail.com'});
+//     expect(user.userName).toBe('testUserUpdated');
+// })
