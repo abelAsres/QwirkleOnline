@@ -7,8 +7,10 @@ class Qwirkle {
     constructor(userName) {
         this.players = [];
         this.score = [];
+        this.endGameArray = [];
         this.board = []; //= [[],[]]
         this.deck = [];
+        this.deckEmpty = false;
         this.start = false;
         this.fistTilePlayed = false;
         this.players.push(userName);
@@ -18,6 +20,34 @@ class Qwirkle {
         this.tileQ = [];
         this.turnScore = 0;
         this.turnAxis;
+        this.endgameReset = -1;
+    }
+
+    noMorePlaySignal(){
+        //console.log("NPM CALLED");
+        if (this.endGameReset == this.turn){
+            for (let i = 0; i < this.endGameArray.length; i++){
+                this.endGameArray[this.turn] = false;
+            }
+            this.endGameReset = -1;
+        }
+
+        this.endGameArray[this.turn] = true;
+        this.endGameReset = this.turn;
+    }
+
+    endGameCheck(handEmpty){
+        // If one player has an empty hand and no more tiles are available. 
+        if (this.deckEmpty && handEmpty) return true;
+        if (this.deckLength == 0) this.deckEmpty = true;
+
+        //console.log("End Game Check PT 2");
+        // If all players select no more play. 
+        for (let i = 0; i < this.endGameArray.length; i++){
+            if (!this.endGameArray[i]) return false;
+        }
+        //console.log("End Game Condition Met");
+        return true;
     }
 
     startGame() {
@@ -31,21 +61,20 @@ class Qwirkle {
         for (let i = 0; i < 56; i++) {
             if (i % 10 < 6) {
                 this.deck.push(i);
-                //this.deck.push(i);
-                //this.deck.push(i);
+                this.deck.push(i);
+                this.deck.push(i);
             }
         }
         for (let i = 0; i < this.players.length; i++){
             this.score[i] = 0;
+            this.endGameArray[i] = false;
         }
         this.start = true;
         this.turn = 0;
     }
 
     endTurn() {
-        console.log("End Turn: Score Calculation & Change Player Turn");
-
-        if(this.tileQ.length >0)
+        if (this.tileQ.length > 0)
             this.endTurnScore();
 
         this.score[this.turn] += this.turnScore;
@@ -207,6 +236,7 @@ class Qwirkle {
         if (this.tileQ.length == 1){
             this.scoreHelper2([[0, 1], [0, -1]]);
             this.scoreHelper2([[1, 0], [-1, 0]]);
+            if (this.turnScore == 0) this.turnScore = 1;
         } else if (this.turnAxis == 'X'){
             this.scoreHelper1([[1, 0], [-1, 0]]);
             this.scoreHelper2([[0, 1], [0, -1]]);

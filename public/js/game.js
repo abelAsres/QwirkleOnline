@@ -72,7 +72,6 @@ $(document).ready(function () {
   else {
     socket.emit("join-room", { gameID: gameID, username: playerID });
   }
-
 });
 
 socket.on("room-created", (id) => {
@@ -84,8 +83,7 @@ socket.on("room-created", (id) => {
     "/game/join?id=" + gameID;
 
   $("#copy-invite-button").append();
-
-  console.log(`Player ${playerID} has created game #${gameID}`);
+  //console.log(`Player ${playerID} has created game #${gameID}`);
 });
 
 // Should update page info to reflect current status.
@@ -93,35 +91,118 @@ socket.on("room-joined", (data) => {
   const { id, count } = data;
   // Update player list.
   playerNum = count;
-
-  console.log(`Player ${playerNum} has joined game #${gameID}`);
+  //console.log(`Player ${playerNum} has joined game #${gameID}`);
 });
 
 socket.on('server-start-game', (players) => {
-
+  // Remove all lobby display elements. 
   document.getElementById("title-gamepage").style = "display: none";
   document.getElementById("gInvite").style = "display: none";
   document.getElementById("startBtns").style = "display: none";
   document.getElementById("gPList").style = "display: none";
+
   document.getElementById("game-app").style = "display: block";
   document.getElementById("gameBtns").style = "display: block";
-  //document.body.style.zoom = "75%"
-  grid.on("mousedown", playTile);
 
   initScoreboard(players);
-
+  
+  //document.body.style.zoom = "75%"
+  grid.on("mousedown", playTile);
 });
 
-function initScoreboard(playerList) {
-  playerCount = playerList.length;
-  for (let i = 1; i <= playerList.length; i++) {
-    $("#player-" + i + "S").replaceWith("<td id=player-" + i + "S>0</td>");
-    if (i == 1){
-      let p = document.getElementById("player-" + i);
-      p.style.color = "red";
-      p.style.fontWeight = "bold";
-    }
+socket.on('server-end-game', (data) => {
+  const {playerID, turnID, count} = data;
+
+  finalScoreboard(count);
+
+  document.getElementById("game-app").style = "display: none";
+  document.getElementById("gameBtns").style = "display: none";
+  document.getElementById("scoreboard").style = "display: none";
+  
+  document.getElementById("end-game-text").style = "display: block";
+  document.getElementById("end-game-table").style = "display: block";
+});
+
+function finalScoreboard(count){
+  let psa = [];
+  let scoreboard = document.getElementById("end-game-table");
+  let table = document.createElement("table");
+  let tbdy = document.createElement("tbody");
+  let tr = document.createElement('tr');
+
+  table.setAttribute('id', 'end-table');
+
+  for (let i = 0; i < count; i++){
+    let name = document.getElementById(`player-${i}`).innerText;
+    let score = document.getElementById(`score-${i}`).innerText;
+
+    psa.push({name, score});
   }
+
+  psa.sort((a, b) => {return b.score - a.score});
+
+  for (let i = 0; i < count; i++){
+    console.log(`${psa[i].name}: ${psa[i].score}`);
+    let td = document.createElement('td');
+    td.appendChild(document.createTextNode(psa[i].name));
+    td.setAttribute('id', `player-${i}`)
+    tr.appendChild(td);
+  }
+
+  tbdy.appendChild(tr);
+  tr = document.createElement('tr');
+
+  for (let i = 0; i < count; i++){
+    let td = document.createElement('td');
+    td.appendChild(document.createTextNode(psa[i].score));
+    td.setAttribute('id', `score-${i}`)
+    tr.appendChild(td);
+  }
+
+  tbdy.appendChild(tr);
+  table.appendChild(tbdy);
+  scoreboard.appendChild(table);
+}
+
+function initScoreboard(playerList){
+  count = playerList.length;
+  let scoreboard = document.getElementById("scoreboard");
+  let table = document.createElement("table");
+  table.setAttribute('id', 'table-score');
+
+  let tbdy = document.createElement("tbody");
+  let tr = document.createElement('tr');
+
+  for (let i = 0; i < count; i++){
+    let td = document.createElement('td');
+    td.appendChild(document.createTextNode(playerList[i]));
+    td.setAttribute('id', `player-${i}`)
+    
+    if (i == 0) {
+      td.style.color = "red";
+      td.style.fontWeight = "bold";
+    }
+
+    tr.appendChild(td);
+  }
+  
+  tbdy.appendChild(tr);
+  tr = document.createElement('tr');
+
+  for (let i = 0; i < count; i++){
+    let td = document.createElement('td');
+    td.appendChild(document.createTextNode("0"));
+    td.setAttribute('id', `score-${i}`)
+    tr.appendChild(td);
+  }
+
+  tbdy.appendChild(tr);
+  table.appendChild(tbdy);
+
+  // Styling
+  table.setAttribute('border', '1');
+
+  scoreboard.appendChild(table);
 }
 
 socket.on('ready-status', (data) => {
@@ -131,17 +212,6 @@ socket.on('ready-status', (data) => {
 function startGame(){
     console.log('Start game has been pressed');
     socket.emit('start-game', {gameID: gameID, playerID: playerID});
-    /*
-    grid.on('mousedown', (evt) => {
-        const mouseCoords = evt.data.global;
-        // check if the mouse is within the bounds of this grid. If not, do nothing.
-        if (mouseCoords.x >= grid.bounds.x1 && mouseCoords.x <= grid.bounds.x2 && mouseCoords.y >= grid.bounds.y1 && mouseCoords.y <= grid.bounds.y2) {
-          let gridCoords = grid.getCellCoordinates(mouseCoords.x, mouseCoords.y);
-          socket.emit('play-tile', {gameID, tile: 1, coord: gridCoords});
-          //grid.onMouseDown(evt, gridCoords);
-        }
-    });
-    */
 }
 
 //
@@ -154,20 +224,27 @@ socket.on("update-player-list", data => {
 function UpdatePlayerList(playerList) {
   console.log(playerList);
   for (let i = 1; i <= playerList.length; i++) {
-    $("#player-" + i).replaceWith("<td id=player-" + i + ">" + playerList[i - 1] + "</td>");
-    $("#player-" + i + "S").replaceWith("<td id=player-" + i + "S>Not Ready</td>");
+    $("#p-" + i).replaceWith("<td id=p-" + i + ">" + playerList[i - 1] + "</td>");
+    $("#p-" + i + "S").replaceWith("<td id=p-" + i + "S>Not Ready</td>");
   }
 }
 
 socket.on('server-end-turn', (data) => {
-  const {playerID, turnID} = data;
-  updateCurrentPlayer(turnID)
+  const {playerID, turnID, score, count, endGame} = data;
+  
+  if (endGame);
+  else endOfTurnUpdate(turnID, score, count);
 });
 
-function updateCurrentPlayer(turnID){
-  turnID++;
+function endOfTurnUpdate(turnID, score, count){
+  console.log(`Turn ID is ${turnID}... Score is ${score}... Count is ${count}`);
 
-  for (let i = 1; i <= playerCount; i++){
+  for (let i = 0; i < count; i++){
+    if (turnID - 1 == i || (turnID - 1 == -1 && i == count - 1)){
+      let s = document.getElementById(`score-${i}`);
+      s.innerText = score;
+    }
+
     if (i != turnID){
       let p = document.getElementById("player-" + i);
       p.style.color = "black";
@@ -192,10 +269,13 @@ socket.on("server-replenish-tile", (data)=>{
     }
 
     playTileArray = [];
-    socket.emit("client-end-turn", {gameID, playerID});
+    socket.emit("client-end-turn", {gameID, playerID, actions: "play-tile"});
   }
 });
 
+function noMoreMoves(){
+  socket.emit("client-end-turn", {gameID, playerID, action: "no-more-plays"});
+}
 
 function ready() {
   let status = updatePlayerStatus();
@@ -536,10 +616,6 @@ function placeSelectedTile(e) {
   app.stage.removeChild(line);
   selectedTile.alpha = 1;
   selectedTile = PIXI.Sprite();
-}
-
-function noMoreMoves(){
-  
 }
 
 // throughout the process multiple signals can be dispatched.
