@@ -6,6 +6,7 @@ const Grid = require("./grid");
 class Qwirkle {
     constructor(userName) {
         this.players = [];
+        this.score = [];
         this.board = []; //= [[],[]]
         this.deck = [];
         this.start = false;
@@ -23,43 +24,47 @@ class Qwirkle {
         // Create a new gameboard
         for (let i = 0; i < this.width; i++) {
             this.board.push(new Array);
-            for (let j = 0; j < this.width; j++) {
+            for (let j = 0; j < this.width; j++) 
                 this.board[i].push(-1);
-            }
         }
-
         // Create new deck
         for (let i = 0; i < 56; i++) {
             if (i % 10 < 6) {
                 this.deck.push(i);
-                this.deck.push(i);
-                this.deck.push(i);
+                //this.deck.push(i);
+                //this.deck.push(i);
             }
         }
-        //console.log("Deck has " + this.deck.length + " tiles.");
+        for (let i = 0; i < this.players.length; i++){
+            this.score[i] = 0;
+        }
         this.start = true;
         this.turn = 0;
-        //console.log(this.board);
     }
 
     endTurn() {
-        console.log("End Turn: Score Calculation & Change Player Turn");
-
         this.endTurnScore();
-    
+        this.score[this.turn] += this.turnScore;
+        let ret = this.score[this.turn];
+
         this.tileQ = [];
         this.turnScore = 0;
         
-        if (this.turn + 1 < this.players.length) { this.turn++; console.log(`It is ${this.players[this.turn]}'s turn'`); }
-        else { this.turn = 0; console.log(`It is ${this.players[this.turn]}'s turn'`); };
+        if (this.turn + 1 < this.players.length) this.turn++;
+        else this.turn = 0;
+
+        return ret;
     }
 
     dealTile() {
-        let i = Math.floor(Math.random() * this.deck.length);
-        let ret = this.deck[i];
-        //console.log("Dealt index: " + i + ", holding value: " + this.deck[i]);
-        this.deck.splice(i, 1);
+        let ret = -1;
+        if (this.deck.length > 0){
+            let i = Math.floor(Math.random() * this.deck.length);
+            ret = this.deck[i];
 
+            this.deck.splice(i, 1);
+
+        } 
         return ret;
     }
 
@@ -110,9 +115,9 @@ class Qwirkle {
         if (this.board[x][y] == -1) {
             let neighbourHelper = [];
             let neighbour = [];
-            let score = 0;
-            console.log(this.tileQ.length);
+            let connection = (this.tileQ.length > 0)? false : true;
 
+            // Get Neighbour tiles that are not empty
             for (let i = 0; i < 4; i++) {
                 let nX = x + this.neighbourHelper[i][0];
                 let nY = y + this.neighbourHelper[i][1];
@@ -124,7 +129,8 @@ class Qwirkle {
                     }
                 }
             }
-            console.log(`neighbourHelper: ${neighbourHelper}, neighbour ${neighbour}`);
+
+            // If there are no neighbours play is invalid
             if (neighbour.length == 0) {
                 return false; // Special case for no neighbours at all 
             }
@@ -143,46 +149,37 @@ class Qwirkle {
                     }
                 }
             }
+            // Check that there are no invalid plays along X and Y axis. 
             for (let i = 0; i < neighbour.length; i++) {
                 let nX = x + neighbourHelper[i][0];
                 let nY = y + neighbourHelper[i][1];
                 let exit = false;
+                // Check up to the next 6 tiles in the row/column for an invalid tile: Check: out of bounds -> same tile -> same color/shape -> else false
+                for (let j = 0; j < 5 && !exit; j++) {
+                    if (nX < 0 || nX > this.width || nY < 0 || nY > this.width) exit = true;
+                    if (this.board[nX][nY] == tile) return false;
+                    else if (this.board[nX][nY] % 10 == tile % 10);
+                    else if (Math.floor(this.board[nX][nY] / 10) == Math.floor(tile / 10));
+                    else if (this.board[nX][nY] == -1) exit = true;
+                    else return false;
+                    
+                    // Check that tile is connected to another tile played this turn.
+                    for (let k = 0; k < this.tileQ.length; k++){
+                        if (this.tileQ[k].x == nX && this.tileQ[k].y == nY) connection = true;
+                    }
 
-                for (let j = 0; j < 6 && !exit; j++) {
-                    if (nX < 0 || nX > this.width || nY < 0 || nY > this.width) {
-                        //console.log("0: ???? - Border Case. !!! Playing Tile");
-                        exit = true;
-                    }
-                    //console.log(`Tile ${tile} at ${nX}, ${nY}`);
-                    if (this.board[nX][nY] == tile) {
-                        //console.log("1: False - Same tile exists");
-                        return false;
-                    }
-                    else if (this.board[nX][nY] % 10 == tile % 10) {
-                        //console.log("1: Continue - Same Shape");
-                    }
-                    else if (Math.floor(this.board[nX][nY] / 10) == Math.floor(tile / 10)) {
-                        //console.log("2: Continue - Same Color");
-                    }
-                    else if (this.board[nX][nY] == -1) {
-                        //console.log("3: Exit - Empty Spot");
-                        exit = true;
-                    }
-                    else {
-                        //console.log("4: False - No matching color/shape or empty spot");
-                        return false;
-                    }
                     nX += neighbourHelper[i][0];
                     nY += neighbourHelper[i][1];
                 }
             }
+            // If tile isn't connected return false.
+            if (!connection) return false;
 
             this.tileQ.push({tile, x, y});
             this.board[x][y] = tile;
-            //this.printBoard();
             return true;
         }
-        console.log("6: ????");
+        // Attempting to play on non-empty space
         return false;
     }
 
@@ -204,9 +201,9 @@ class Qwirkle {
 
     endTurnScore(){
         let neighbourHelper;
-        console.log(`*********** Turn AXIS IS ${this.turnAxis}`);
         if (this.tileQ.length == 1){
-            this.scoreHelper();
+            this.scoreHelper2([[0, 1], [0, -1]]);
+            this.scoreHelper2([[1, 0], [-1, 0]]);
         } else if (this.turnAxis == 'X'){
             this.scoreHelper1([[1, 0], [-1, 0]]);
             this.scoreHelper2([[0, 1], [0, -1]]);
@@ -216,46 +213,22 @@ class Qwirkle {
 
             neighbourHelper = [[0, 1], [0, -1]];
         }
-        console.log(`******* Total Turn Score is ${this.turnScore}`);
-    }
-    
-    // Special Case for when only a single tile is played in a turn.
-    scoreHelper(){
-        console.log("Scoring for one tile");
-        for (let i = 0; i < this.neighbourHelper.length; i++){
-            let exit = false;
-            let score = 0;
-            let nX = this.tileQ[0].x + this.neighbourHelper[i][0];
-            let nY = this.tileQ[0].y + this.neighbourHelper[i][1];
-
-            for (let j = 0; j < 5 && !exit; j++){
-                if (nX < 0 || nX > this.width || nY < 0 || nY > this.width) {exit = true;}
-                else if (this.board[nX][nY] != -1) score++;
-                else if (this.board[nX][nY] == -1) exit = true;
-
-                nX += this.neighbourHelper[i][0];
-                nY += this.neighbourHelper[i][1];
-            }
-            this.turnScore += score;
-        }
-        this.turnScore++;
+        console.log(`*********** Total Turn Score is ${this.turnScore}`);
     }
 
     scoreHelper1(neighbourHelper){
         for (let h = 0; h < this.tileQ.length; h++){
-            let scoreTrigger = false;
+            let score = 0;
 
             for (let i = 0; i < neighbourHelper.length; i++){
                 let exit = false;
                 let nX = this.tileQ[h].x + neighbourHelper[i][0];
                 let nY = this.tileQ[h].y + neighbourHelper[i][1];
-                let score = 0;
 
                 for (let j = 0; j < 5 && !exit; j++){
                     //console.log(`Check ${nX}, ${nY}. Tile is ${this.board[nX][nY]}`);
                     if (nX < 0 || nX > this.width || nY < 0 || nY > this.width) {exit = true;}
                     else if (this.board[nX][nY] != -1){
-                        scoreTrigger = true;
                         score++;
                     } 
                     else if (this.board[nX][nY] == -1) exit = true;
@@ -263,17 +236,17 @@ class Qwirkle {
                     nX += neighbourHelper[i][0];
                     nY += neighbourHelper[i][1];
                 }
-                this.turnScore += score;
                 //console.log(`Tile ${this.tileQ[h].tile}. Total Turn Score is ${score}`);
             }
-            if (scoreTrigger) this.turnScore++;
+            if (score > 0) score++;
+            if (score == 6) score = 12;
+            this.turnScore += score;
         }
     }
 
     scoreHelper2(neighbourHelper){
-        let scoreTrigger = false;
+        let score = 0;
         for (let i = 0; i < neighbourHelper.length; i++){
-            let score = 0;
             let exit = false;
             let nX = this.tileQ[0].x + neighbourHelper[i][0];
             let nY = this.tileQ[0].y + neighbourHelper[i][1];
@@ -284,18 +257,17 @@ class Qwirkle {
                 if (nX < 0 || nX > this.width || nY < 0 || nY > this.width) exit = true;
                 else if (this.board[nX][nY] != -1) {
                     score++;
-                    scoreTrigger = true;
                 }
                 else if (this.board[nX][nY] == -1) exit = true;
 
                 nX += neighbourHelper[i][0];
                 nY += neighbourHelper[i][1];
             }
-            this.turnScore += score;
         }
-        if (scoreTrigger) this.turnScore++;
+        if (score > 0) score++;
+        if (score == 6) score = 12;
+        this.turnScore += score;
     }
-
 
     endTurnPlayTile() {
 
