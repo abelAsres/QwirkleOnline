@@ -188,12 +188,17 @@ io.on("connection", function (socket) {
   });
 
   socket.on('client-end-turn', data =>{
-    const {gameID, playerID} = data;
-    rList[gameID].endTurn();
+    const {gameID, playerID, action} = data;
+
+    if (action == "no-more-plays") rList[gameID].noMorePlaySignal();
+    
+    let score = rList[gameID].endTurn();
+    let endGame = rList[gameID].endGameCheck(false);
+
     let turnID = rList[gameID].turn;
-    console.log("Turn ID is " + turnID);
-    io.to(gameID).emit("server-end-turn", {playerID, turnID});
-    //socket.emit("deal-swapped-tiles", { swappedTiles: swappedTiles });
+    let count = rList[gameID].players.length;
+
+    io.to(gameID).emit("server-end-turn", {playerID, turnID, score, count, endGame});
   })
 
   socket.on('client-end-play', data =>{
