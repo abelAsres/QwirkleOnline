@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const isAuthenticated = require('../middleware/authenticateUser');
 const isAuthorized = require('../middleware/authorizationUser');
-const userModel = require('../Models/User');
+const playerRecord = require('../Models/PlayHistory');
 const loadDashBoard = require('../middleware/authorizationUser');
 
 //dashboard route with verfication middleware
