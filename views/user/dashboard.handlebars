@@ -90,7 +90,7 @@
                         {{#each this}}
                         <tr>
                             <td>{{this.score}}</td>
-                            <td>{{this.gameID}}</td>
+                            <td><a href="/user/match/{{this.gameID}}">{{this.gameID}}</a></td>
                             <td>{{this.createdAt}}</td>
                         </tr>
                         {{/each}}

@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1>Match: {{matchData.gameID}}</h1>
+            <h2>Date: {{matchData.createdAt}}</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">User</th>
+                        <th scope="col">Score</th>
+                    </tr>
+                    {{#each matchData.users}}
+                        <tr>
+                            <td>{{playerID}}</td>
+                            <td>{{score}}</td>
+                        </tr>
+                    {{/each}}
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>

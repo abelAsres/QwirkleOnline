@@ -48,6 +48,7 @@ const rList = {};
 
 
 const recordGameData = require('./Models/PlayHistory');
+const matchPlayed = require('./Models/PlayedMatch');
 //
 app.use(
   session({
@@ -204,19 +205,37 @@ io.on("connection", function (socket) {
       let count = rList[gameID].players.length;
 
       if (endGame) {
-        for (let i = 0; i < rList[gameID].players.length;i++){
-          const newPlayerRecord={
-            userName:rList[gameID].players[i],
-            gameID:gameID,
-            score:rList[gameID].score[i]
+        let userData = [];
+        for (let i = 0; i < rList[gameID].players.length;i++) {
+          let user = {};
+          user.playerID = rList[gameID].players[i];
+          user.score = rList[gameID].score[i]
+          userData.push(user);
         }
-        console.log(newPlayerRecord);
-        const playerRecord = new recordGameData(newPlayerRecord);
-        playerRecord.save()
+
+        const match = {
+          gameID: gameID,
+          users: userData
+        }
+
+        const matchComplete= new matchPlayed(match)
+        
+        matchComplete.save()
         .then(()=>{
-          console.log(`Save player record for ${newPlayerRecord.userName}`);
+          for (let i = 0; i < rList[gameID].players.length;i++){
+            const newPlayerRecord={
+              userName:rList[gameID].players[i],
+              gameID:gameID,
+              score:rList[gameID].score[i]
+            }
+            console.log(newPlayerRecord);
+            const playerRecord = new recordGameData(newPlayerRecord);
+            playerRecord.save()
+            .then(()=>{
+              console.log(`Save player record for ${newPlayerRecord.userName}`);
+            })
+          }
         })
-        }
         
         //.then(()=>{
           io.to(gameID).emit("server-end-game", { playerID, turnID, count });;

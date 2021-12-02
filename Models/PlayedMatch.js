@@ -4,10 +4,9 @@ let moment = require('moment');
 moment().format();
 
 //Create structure for Play History documents
-const playHistorySchema = new Schema({
-  userName:  String, // String is shorthand for {type: String}
-  gameID: String,
-  score:Number,
+const matchSchema = new Schema({
+  gameID:  String, // String is shorthand for {type: String}
+  users: [{}],
   
   createdAt: { 
     type: String, 
@@ -16,6 +15,6 @@ const playHistorySchema = new Schema({
 });
 
 
-const playHistoryModel = mongoose.model('PlayHistory',playHistorySchema);
+const matchPlayedModel = mongoose.model('MatchesPlayed',matchSchema);
 
-module.exports = playHistoryModel;
+module.exports = matchPlayedModel;
