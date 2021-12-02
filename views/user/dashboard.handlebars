@@ -76,6 +76,30 @@
     <div class="row">
         <div class="col" id="games_table" style="padding-top: 4%;">
             <h2><a href = "#">Recent Games</a></h2>
+            {{#if hasPlayerRecs}}
+            <table class="table">
+                <thead>
+                    <tr>
+                    <th scope="col">Score</th>
+                    <th scope="col">GameID</th>
+                    <th scope="col">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each playerRecs}}
+                        {{#each this}}
+                        <tr>
+                            <td>{{this.score}}</td>
+                            <td><a href="/user/match/{{this.gameID}}">{{this.gameID}}</a></td>
+                            <td>{{this.createdAt}}</td>
+                        </tr>
+                        {{/each}}
+                    {{/each}}
+                </tbody>
+                {{else}}
+                <p>You have not completed a game yet!!!</p>
+                {{/if}}
+            </table>
         </div>
     </div>
 </div>
