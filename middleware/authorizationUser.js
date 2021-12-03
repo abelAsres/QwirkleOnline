@@ -5,7 +5,7 @@ const loadDashBoard = (req,res,next) =>{
   // admin privillages for testing features
   
   console.log("authorizing");
-  playerRecords.find({userName:req.session.userInfo.userName})
+  playerRecords.find({userName:req.session.userInfo.userName}).lean()
   .then((doc)=>{
     if(doc != null){
       res.render('user/dashboard',{

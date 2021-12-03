@@ -81,6 +81,7 @@ console.log(`in match router looking for ${req.params.id}`)
         console.log(doc);
         res.render('user/match',{
         tite: 'Match Page',
+        style:'match.css',
         matchData: doc
     })
   })
