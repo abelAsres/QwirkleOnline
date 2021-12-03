@@ -34,7 +34,7 @@ body {
   text-align: center;
   margin-top: 2%;
   margin-left: 48%;
-  position: static;
+  position: relative;
 }
 
 #login:hover {
@@ -65,4 +65,42 @@ body {
 
 #inputPassword {
   border-color: skyblue;
+}
+
+@media only screen and (max-width: 800px) {
+  #email-label {
+    display: inline-block;
+    margin-left: 37%;
+  }
+
+  #inputPassword {
+    margin-left: 33%;
+  }
+}
+@media only screen and (max-width: 600px) {
+  #title_login {
+      font-family: forte;
+      font-size: 60px;
+      text-align: center;
+      padding-top: 30%;
+      position: relative;
+  }
+}
+
+@media only screen and (max-width: 575px) {
+  .col-sm-3 {
+      margin-left: 0%;
+  }
+
+  #inputPassword {
+    margin-left: 40%;
+  }
+
+  #login {
+    margin-left: 30%
+  }
+
+  #inputPassword {
+    margin-left: 0%;
+  }
 }

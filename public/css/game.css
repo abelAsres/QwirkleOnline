@@ -7,6 +7,7 @@
   #title-gamepage {
     font-family: forte;
     font-size: 60px;
+    padding-left: 43%;
   }
 
   body {
@@ -31,6 +32,11 @@
     margin-top: -38%
 }
 */
+
+#copy-invite-button {
+  padding-left:43%;
+}
+
 #copyBtn {
 	color: #fff !important;
 	text-transform: uppercase;
@@ -38,7 +44,7 @@
 	background: #74bb4b;
 	padding: 10px;
 	border-radius: 10px;
-	display: inline-block;
+  display: inline-block;
 	border: none;
     transition: all 0.4s ease 0s;
     margin-left: 2%;
@@ -64,6 +70,9 @@
 table {
     border-collapse: separate !important;
 }
+#player-table {
+  padding-left:44%;
+}
 
 #player-table #player-1 {
         border: 2px solid #8fccff;
@@ -74,7 +83,7 @@ table {
         width: 50px;
         height: 25px;  
         white-space: nowrap;
-        text-align: center
+        text-align: center;
 }
 
 #readyBtn, #readyBtn::after {
@@ -91,6 +100,8 @@ table {
     outline: transparent;
     position: relative;
     font-weight: bold;
+    left: 32%;
+    margin-top: 5%
   }
   
   #readyBtn::after {
@@ -180,6 +191,7 @@ table {
     position: relative;
     margin-left: 8%;
     font-weight: bold;
+    left: 30%;
   }
   
   #startBtn::after {
@@ -251,5 +263,64 @@ table {
     100% {
       clip-path: var(--slice-1);
       transform: translate(0);
+    }
+  }
+
+  #gameInv {
+    font-family: Comic Sans MS, Comic Sans, cursive; 
+    font-weight: bold; 
+    color: green; 
+    font-style:italic; 
+    padding-left:43%;
+  }
+
+  #pList {
+    font-family: Comic Sans MS, Comic Sans, cursive; 
+    font-weight: bold; 
+    color: green; 
+    font-style:italic; 
+    padding-left:43%; 
+    padding-top:3%;
+  }
+  
+  @media only screen and (max-width: 767px) {
+    #readyBtn {
+      left: 20%;
+    }
+    #startBtn {
+      left: 20%;
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+    #title-gamepage {
+      font-family: forte;
+      font-size: 60px;
+      padding-left: 23%;
+    }
+    #player-table {
+      padding-left:24%;
+    }
+    #readyBtn {
+      left: 0%;
+    }
+    #startBtn {
+      left: 0%;
+    }
+    #gameInv {
+      padding-left:23%;
+    }
+    #copy-invite-button {
+      padding-left:23%;
+    }
+    #pList {
+      padding-left:23%;
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+    #startBtn {
+      margin-top: 10%;
+      left: -8%;
     }
   }

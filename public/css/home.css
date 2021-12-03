@@ -9,6 +9,7 @@
     font-size: 120px;
     text-align: center;
     padding-top: 15%;
+    position: relative;
 }
 
 body {
@@ -51,3 +52,13 @@ body {
 
 #login:hover {background-color: green}
 #register:hover {background-color: green}
+
+@media only screen and (max-width: 600px) {
+    #title_homepage {
+        font-family: forte;
+        font-size: 60px;
+        text-align: center;
+        padding-top: 30%;
+        position: relative;
+    }
+}

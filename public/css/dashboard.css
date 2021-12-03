@@ -161,3 +161,23 @@ body {
 #register:hover {
   background-color: rgb(60, 164, 206);
 }
+
+@media only screen and (max-width: 600px) {
+  #title_registration {
+      font-size: 60px;
+      text-align: center;
+      padding-top: 10%;
+      position: relative;
+  }
+
+  #title_dashboard {
+    font-family: forte;
+    font-size: 60px;
+    text-align: center;
+    padding-top: 8%;
+  }
+  
+  table {
+    width: 100px;
+  }
+}
