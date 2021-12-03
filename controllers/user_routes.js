@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router(); 
 const bcrypt = require('bcryptjs');
+const matchesPlayed = require('../Models/PlayedMatch');
 const isAuthenticated = require('../middleware/authenticateUser');
 const isAuthorized = require('../middleware/authorizationUser');
-const userModel = require('../Models/User');
+const playerRecord = require('../Models/PlayHistory');
 const loadDashBoard = require('../middleware/authorizationUser');
 
 //dashboard route with verfication middleware
@@ -72,5 +73,18 @@ router.put('/update', (req,res)=>{
         .catch(err=>console.log(`Error: ${err}`));
     }
 });
+
+router.get('/match/:id', (req,res)=>{
+console.log(`in match router looking for ${req.params.id}`)
+    matchesPlayed.findOne({gameID:req.params.id}).lean()
+    .then((doc)=>{
+        console.log(doc);
+        res.render('user/match',{
+        tite: 'Match Page',
+        style:'match.css',
+        matchData: doc
+    })
+  })
+})
 
 module.exports=router;
