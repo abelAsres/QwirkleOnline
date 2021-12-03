@@ -161,7 +161,6 @@ body {
 #register:hover {
   background-color: rgb(60, 164, 206);
 }
-
 @media only screen and (max-width: 600px) {
   #title_registration {
       font-size: 60px;
@@ -180,4 +179,11 @@ body {
   table {
     width: 100px;
   }
+#game-played-table { 
+  border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
