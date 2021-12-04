@@ -4,6 +4,10 @@
     font-style: normal;
 }
 
+body {
+    width: 100%;
+}
+
 #title_registration {
     font-family: forte;
     font-size: 120px;
@@ -91,4 +95,62 @@ body {
 
 #register:hover {
     background-color: rgb(60, 164, 206);
+}
+
+@media only screen and (max-width: 770px) {
+    .col-sm-3 {
+        margin-left: 10%;
+    }
+
+    #email-label {
+        margin-left: 22%;
+    }
+    
+    #username-label {
+        margin-left: 22%;
+    }
+    
+    #verifyPassword-label {
+        margin-left: 22%;
+    }
+    
+    #password-label {
+        margin-left: 22%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    #title_registration {
+        font-family: forte;
+        font-size: 60px;
+        text-align: center;
+        padding-top: 10%;
+        position: relative;
+    }
+}
+
+@media only screen and (max-width: 575px) {
+    .col-sm-3 {
+        margin-left: 0%;
+    }
+
+    #email-label {
+        margin-left: 40%;
+    }
+    
+    #username-label {
+        margin-left: 34%;
+    }
+    
+    #verifyPassword-label {
+        margin-left: 28%;
+    }
+    
+    #password-label {
+        margin-left: 36%;
+    }
+
+    #register {
+        margin-left: 28%
+    }
 }

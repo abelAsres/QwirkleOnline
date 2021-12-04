@@ -152,7 +152,7 @@ io.on("connection", function (socket) {
       for (let i in rList[gameID].players) {
         let tileArray = [];
 
-        for (let j = 0; j < 24; j++) {
+        for (let j = 0; j < 6; j++) {
           tileArray.push(rList[gameID].dealTile());
         }
         console.log(`Dealing ${tileArray} to ${rList[gameID].players[i]}`);
