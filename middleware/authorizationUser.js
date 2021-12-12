@@ -7,9 +7,6 @@ const loadDashBoard = (req,res,next) =>{
   console.log("authorizing");
   playerRecords.find({userName:req.session.userInfo.userName}).sort({createdAt: 'asc'}).lean()
   .then((doc)=>{
-    console.log("check Player recs");
-    console.log(doc.length);
-
     if(doc.length != 0){
       res.render('user/dashboard',{
         title: `${req.session.userInfo.userName} Dashboard`,

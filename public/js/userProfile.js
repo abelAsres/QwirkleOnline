@@ -1,4 +1,3 @@
-
 const profileUpdateForm = document.getElementById('update-profile');
 
 const editProfile = document.getElementById('edit-user-profile');
@@ -12,6 +11,9 @@ editProfile.addEventListener('click', function(e) {
   }
 });
 
+
+//need to fetch playerRecs from dashboard view 
+/*
 const createPageNav = (data)=>{
   let totalNumberOfItems = data.length;
   let itemsPerPage = 10;
@@ -34,8 +36,4 @@ const createPageNav = (data)=>{
 
   let nextPage = document.createElement('li');
   nextPage.innerHTML = '<a class="page-link" href="#">Next</a>'
-}
-
-$(document).ready(function(){
-  console.log(playerRecs);
-})
+}*/
