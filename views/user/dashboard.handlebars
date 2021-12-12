@@ -34,26 +34,6 @@
                         {{#if errors.password}}<div class="text-danger" id="password-error">{{errors.password}}</div>{{/if}}
                     </div>
                 </div>
-                <!---div class="form-group row">
-                    <label for="inputPassword" class="col-sm-2 col-form-label">New Password</label>
-                    <div class="col-sm-10">
-                        <input type="password" class="form-control" id="inputNewPassword" name="newPassword" placeholder="Password" required>
-                        <small id="passwordHelpBlock" class="form-text text-muted">
-                            Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
-                        </small>
-                        {{#if errors.newPassword}}<div class="text-danger" id="password-error">{{errors.newPassword}}</div>{{/if}}
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="verfiyPassword" class="col-sm-2 col-form-label">Verify Password</label>
-                    <div class="col-sm-10">
-                        <input type="password" class="form-control" id="verfiyPassword" name="checkPassword" placeholder="Verify Password" required>
-                        <small id="verifyPasswordHelpBlock" class="form-text text-muted">
-                            Please re-enter your password for verfication
-                        </small>
-                        {{#if errors.verifyPassword}}<div class="text-danger" id="check-password-error">{{errors.verifyPassword}}</div>{{/if}}
-                    </div>
-                </div--->
                 <div class="form-group row">
                     <div class="col-sm-6">
                         <button type="submit" class="update-button btn btn-outline-success">Update Profile</button>
@@ -74,42 +54,5 @@
         </div>
     </div>
     {{> games_played}}
-    <!---div class="row">
-        <div class="col" id="games_table" style="padding-top: 4%;">
-            <h2>Recent Games</h2>
-            {{#if hasPlayerRecs}}
-            <table class="table table-striped" id="game-played-table">
-                <thead>
-                    <tr>
-                    <th scope="col">Score</th>
-                    <th scope="col">GameID</th>
-                    <th scope="col">Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each playerRecs}}
-                        <tr>
-                            <td>{{score}}</td>
-                            <td><a href="/user/match/{{gameID}}">{{gameID}}</a></td>
-                            <td>{{createdAt}}</td>
-                        </tr>
-                    {{/each}}
-                </tbody>
-            </table>
-            <nav aria-label="Page navigation example">
-            <ul class="pagination">
-                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">Next</a></li>
-            </ul>
-            </nav>
-            {{else}}
-                <p>You have not completed a game yet!!!</p>
-            {{/if}}
-        </div>
-    </div--->
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="/js/userProfile.js"></script>
