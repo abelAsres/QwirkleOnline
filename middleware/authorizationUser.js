@@ -5,9 +5,12 @@ const loadDashBoard = (req,res,next) =>{
   // admin privillages for testing features
   
   console.log("authorizing");
-  playerRecords.find({userName:req.session.userInfo.userName}).lean()
+  playerRecords.find({userName:req.session.userInfo.userName}).sort({createdAt: 'asc'}).lean()
   .then((doc)=>{
-    if(doc != null){
+    console.log("check Player recs");
+    console.log(doc.length);
+
+    if(doc.length != 0){
       res.render('user/dashboard',{
         title: `${req.session.userInfo.userName} Dashboard`,
         style: 'dashboard.css',

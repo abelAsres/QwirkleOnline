@@ -73,7 +73,8 @@
             <a class="btn btn-primary" href="#" role="button" id="edit-user-profile">Edit Profile</a>
         </div>
     </div>
-    <div class="row">
+    {{> games_played}}
+    <!---div class="row">
         <div class="col" id="games_table" style="padding-top: 4%;">
             <h2>Recent Games</h2>
             {{#if hasPlayerRecs}}
@@ -94,12 +95,21 @@
                         </tr>
                     {{/each}}
                 </tbody>
-                {{else}}
-                <p>You have not completed a game yet!!!</p>
-                {{/if}}
             </table>
+            <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+            </nav>
+            {{else}}
+                <p>You have not completed a game yet!!!</p>
+            {{/if}}
         </div>
-    </div>
+    </div--->
 </div>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="/js/userProfile.js"></script>
