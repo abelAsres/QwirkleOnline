@@ -6,9 +6,9 @@ const isLoggedIn=(req,res,next)=>{
     */
     // Remove Following Section when debugging is complete
     //console.log('user authenticated');
-    next();
+    //next();
     //
-    /*
+    
     if (req.session.userInfo){
         console.log('user authenticated');
         next();
@@ -22,7 +22,6 @@ const isLoggedIn=(req,res,next)=>{
             res.redirect("/login");
         }
     }
-    */
 }
 
 module.exports=isLoggedIn;

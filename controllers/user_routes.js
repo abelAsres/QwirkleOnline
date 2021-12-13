@@ -6,6 +6,8 @@ const isAuthenticated = require('../middleware/authenticateUser');
 const isAuthorized = require('../middleware/authorizationUser');
 const playerRecord = require('../Models/PlayHistory');
 const loadDashBoard = require('../middleware/authorizationUser');
+const userModel = require('../Models/User');
+const playedGames = require('../Models/PlayHistory');
 
 //dashboard route with verfication middleware
 router.get('/dashboard',isAuthenticated,isAuthorized);
@@ -65,10 +67,15 @@ router.put('/update', (req,res)=>{
         let user={
             userName:userName
         }
-        req.session.userInfo.userName=user.userName;
-        userModel.updateOne({email:req.session.userInfo.email},user)
+
+        playedGames.updateMany({userName:req.session.userInfo.userName},{'$set':{"userName":user.userName}})
         .then(()=>{
-            res.redirect("/user/dashboard");
+            req.session.userInfo.userName=user.userName;
+            userModel.updateOne({email:req.session.userInfo.email},user)
+            .then(()=>{
+                res.redirect("/user/dashboard");
+            })
+            .catch(err=>console.log(`Error: ${err}`));
         })
         .catch(err=>console.log(`Error: ${err}`));
     }

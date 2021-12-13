@@ -524,7 +524,11 @@ function intiateSwap() {
   swap = !swap;
   let confirmSwapBtn = document.getElementById("swapTilesBtn");
   let swapButton = document.getElementById("intiateSwapBtn");
+  let endTurnBtn = document.getElementById("endTurnBtn");
+  let noMoreMoves = document.getElementById("noMoreMoves");
   if (swap) {
+    endTurnBtn.style.display = "none";
+    noMoreMoves.style.display = "none";
     confirmSwapBtn.style.display = "inline";
     swapButton.innerHTML = "Cancel Swap";
     if (selectedTile.alpha == 0.5) {
@@ -536,6 +540,9 @@ function intiateSwap() {
       tile.alpha = 1;
     });
     swapTileArray = [];
+    
+    endTurnBtn.style.display = "inline";
+    noMoreMoves.style.display = "inline";
     confirmSwapBtn.style.display = "none";
     swapButton.innerHTML = "Swap Tiles";
   }
