@@ -4,7 +4,6 @@ const bcrypt = require('bcryptjs');
 const userModel = require('../Models/User');
 const validation = require('../public/js/validation');
 const gameModel = require('../Models/Game');
-const modaljs = require('../public/js/modal')
 
 //Home Route
 router.get('/', (req,res)=>{
