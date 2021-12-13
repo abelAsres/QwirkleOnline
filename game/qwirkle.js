@@ -1,8 +1,6 @@
 const colors = ['Yellow', 'Blue', 'Red', 'Orange', 'Purple', 'Green'];
 const shapes = ['Circle', 'Cross', 'Diamond', 'Square', 'Star', 'Triangle'];
 
-const Grid = require("./grid");
-
 class Qwirkle {
     constructor(userName) {
         this.players = [];
