@@ -3,7 +3,6 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const userModel = require('../Models/User');
 const validation = require('../public/js/validation');
-const gameModel = require('../Models/Game');
 
 //Home Route
 router.get('/', (req,res)=>{
@@ -89,9 +88,6 @@ router.post('/registration',(req,res)=>{
             populate_fields: entered_fields
         });
     } 
-
-    //console.log(`email: ${email}, username: ${username}, password: ${password}, passValidation: ${passValidation}`);
-
     if (passValidation) {
         //validation has passed store user to cluster
         console.log('passed validation');

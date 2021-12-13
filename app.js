@@ -41,8 +41,6 @@ const gameController = require("./controllers/game_routes");
 // Used to store all current rooms
 const uuid = require("uuid");
 
-//const room = {playerList: [], playerScore: []}
-//interface roomData {[key: roomID] : room};
 const Qwirkle = require("./game/qwirkle");
 const rList = {};
 
@@ -54,8 +52,7 @@ app.use(
   session({
     secret: process.env.SESSION_KEY || "testsession",
     resave: false,
-    saveUninitialized: true,
-    //  cookie: { secure: true }
+    saveUninitialized: true
   })
 );
 
@@ -93,8 +90,6 @@ io.on("connection", function (socket) {
     io.to(gameID).emit('room-created', gameID);
   });
 
-  //socket.to().emit();
-
   // Left to be done:
   //  Reject connection if it doesn't exist or 4 players in room.
   //  Actually update page with proper values.
@@ -112,7 +107,6 @@ io.on("connection", function (socket) {
       rList[gameID].addPlayer(username);
 
       socket.emit('room-joined', { id: gameID, count: playerCount });
-      //io.to(gameID).emit('room-joined', {id: gameID, count: playerCount});
 
       // Query which players are in the current channel.
       // Update room info.
@@ -122,6 +116,7 @@ io.on("connection", function (socket) {
     }
     // If more than 4 players don't connect and send him outside.
     else {
+      //redirect room is full
     }
   });
 
@@ -145,10 +140,6 @@ io.on("connection", function (socket) {
       players = rList[gameID].players;
       io.to(gameID).emit('server-start-game', players);
 
-      //io.to(gameID).emit('init-scoreboard', rList[gameID].players.length);
-
-      //io.to(gameID).emit("init-scoreboard");
-
       for (let i in rList[gameID].players) {
         let tileArray = [];
 
@@ -166,12 +157,6 @@ io.on("connection", function (socket) {
 
   socket.on("tile-swap", (data) => {
     const { gameID, playerID, tiles } = data;
-    //console.log(`gameID: ${gameID}, playerID: ${playerID}, swapTileArray: ${tiles}`);
-    //console.log("TILEARRAY");
-    //console.log(tileArray);
-    // const colorNum = rList[gameID].getColorIndex(color);
-    // const shapeNum = rList[gameID].getShapeIndex(shape);
-    // const tileNum = parseInt(""+colorNum+shapeNum);
     if (turnCheck(gameID, playerID)) {
       let swappedTiles = [];
       let tileArray = tiles;
@@ -236,10 +221,7 @@ io.on("connection", function (socket) {
             })
           }
         })
-        
-        //.then(()=>{
-          io.to(gameID).emit("server-end-game", { playerID, turnID, count });;
-        //})        
+        io.to(gameID).emit("server-end-game", { playerID, turnID, count });    
       }
       io.to(gameID).emit("server-end-turn", { playerID, turnID, score, count, endGame });
     }
@@ -253,7 +235,6 @@ io.on("connection", function (socket) {
       tileArray.push(rList[gameID].dealTile());
     }
     io.to(gameID).emit("server-replenish-tile", { playerID, tileArray });
-    //socket.emit("deal-swapped-tiles", { swappedTiles: swappedTiles });
   })
 
   socket.on('client-play-tile', data => {
@@ -264,10 +245,6 @@ io.on("connection", function (socket) {
     if (turnCheck(gameID, playerID) && rList[gameID].playTile(tile, x, y)) {
       io.to(gameID).emit('server-play-tile', { gameID, playerID, tile, gridCoords, absCoords });
     }
-  });
-
-  socket.on("disconnect", function () {
-    //console.log('user disconnected');
   });
 
   socket.on("deal-tile", (data) => {

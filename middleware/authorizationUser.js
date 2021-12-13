@@ -1,7 +1,6 @@
 const playerRecords = require('../Models/PlayHistory');
 // determine if user has admin privillages, or is just a regular user
 const loadDashBoard = (req,res,next) =>{
-  //console.log('Authorizing user');
   // admin privillages for testing features
   
   console.log("authorizing");

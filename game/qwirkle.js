@@ -22,7 +22,6 @@ class Qwirkle {
     }
 
     noMorePlaySignal(){
-        //console.log("NPM CALLED");
         if (this.endGameReset == this.turn){
             for (let i = 0; i < this.endGameArray.length; i++){
                 this.endGameArray[this.turn] = false;
@@ -39,12 +38,10 @@ class Qwirkle {
         if (this.deckEmpty && handEmpty) return true;
         if (this.deckLength == 0) this.deckEmpty = true;
 
-        //console.log("End Game Check PT 2");
         // If all players select no more play. 
         for (let i = 0; i < this.endGameArray.length; i++){
             if (!this.endGameArray[i]) return false;
         }
-        //console.log("End Game Condition Met");
         return true;
     }
 
@@ -102,7 +99,6 @@ class Qwirkle {
         let ret = false;
 
         if (x == 15 & y == 15 && this.board[x][y] == -1){
-            console.log("Push Tile Q");
             this.tileQ.push({tile, x, y});
             this.board[x][y] = tile;
             this.firstTilePlayed = true;
@@ -140,7 +136,6 @@ class Qwirkle {
     }
 
     playNormalTile(tile, x, y) {
-        console.log("Determining if Play is Valid");
         // If this space is empty find the non empty neighbours. 
         if (this.board[x][y] == -1) {
             let neighbourHelper = [];
@@ -244,7 +239,6 @@ class Qwirkle {
 
             neighbourHelper = [[0, 1], [0, -1]];
         }
-        console.log(`*********** Total Turn Score is ${this.turnScore}`);
     }
 
     scoreHelper1(neighbourHelper){
@@ -257,7 +251,6 @@ class Qwirkle {
                 let nY = this.tileQ[h].y + neighbourHelper[i][1];
 
                 for (let j = 0; j < 5 && !exit; j++){
-                    //console.log(`Check ${nX}, ${nY}. Tile is ${this.board[nX][nY]}`);
                     if (nX < 0 || nX > this.width || nY < 0 || nY > this.width) {exit = true;}
                     else if (this.board[nX][nY] != -1){
                         score++;
@@ -267,7 +260,6 @@ class Qwirkle {
                     nX += neighbourHelper[i][0];
                     nY += neighbourHelper[i][1];
                 }
-                //console.log(`Tile ${this.tileQ[h].tile}. Total Turn Score is ${score}`);
             }
             if (score > 0) score++;
             if (score == 6) score = 12;
@@ -283,7 +275,6 @@ class Qwirkle {
             let nY = this.tileQ[0].y + neighbourHelper[i][1];
 
             for (let j = 0; j < 5 && !exit; j++){
-                console.log(`Check ${nX}, ${nY}: ${this.board[nX][nY]}`);
 
                 if (nX < 0 || nX > this.width || nY < 0 || nY > this.width) exit = true;
                 else if (this.board[nX][nY] != -1) {
@@ -300,10 +291,6 @@ class Qwirkle {
         this.turnScore += score;
     }
 
-    endTurnPlayTile() {
-
-    }
-
     checkAxis(tile, x, y) {
         // If we run into the edge of board or an empty grid without seeing an invalid tile return true. 
         if (this.board[x][y] == -1) {
@@ -311,13 +298,6 @@ class Qwirkle {
         }
 
     }
-
-}
-
-
-function dealTile() {
-
-    return 0;
 }
 
 module.exports = Qwirkle;

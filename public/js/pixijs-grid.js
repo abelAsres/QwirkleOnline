@@ -161,24 +161,6 @@ class PixiJSGrid extends PIXI.Graphics {
     // handle mouse move
     this.hitArea = new PIXI.Rectangle(0, 0, width, width);
     this.interactive = true;
-
-
-    /*
-    this.on('mousemove', (evt) => {
-      const mouseCoords = evt.data.global;
-      // check if the mouse is within the bounds of this grid. If not, do nothing.
-      if (
-        mouseCoords.x >= this.bounds.x1 &&
-        mouseCoords.x <= this.bounds.x2 &&
-        mouseCoords.y >= this.bounds.y1 &&
-        mouseCoords.y <= this.bounds.y2
-      ) {
-        const gridCoords = this.getCellCoordinates(mouseCoords.x, mouseCoords.y);
-        this.onMousemove(evt, gridCoords);
-      }
-    });
-    */
-
   }
   
   /**
@@ -265,7 +247,5 @@ class PixiJSGrid extends PIXI.Graphics {
       this._correctedWidth = this._gridWidth;
     }
       this._correctedWidth = this._gridWidth;
-
-    //this._correctedWidth = Math.ceil(Math.sqrt(this._gridWidth)) ** 2;
   }
 }

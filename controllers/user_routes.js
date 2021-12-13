@@ -4,8 +4,6 @@ const bcrypt = require('bcryptjs');
 const matchesPlayed = require('../Models/PlayedMatch');
 const isAuthenticated = require('../middleware/authenticateUser');
 const isAuthorized = require('../middleware/authorizationUser');
-const playerRecord = require('../Models/PlayHistory');
-const loadDashBoard = require('../middleware/authorizationUser');
 const userModel = require('../Models/User');
 const playedGames = require('../Models/PlayHistory');
 
@@ -55,7 +53,6 @@ router.put('/update', (req,res)=>{
     //check for any errors
     if(!passValidation) {
         
-        //console.log('did not pass validation');
         res.render('/dashboard', {
             title: 'User Page',
             style:'dashboard.css',

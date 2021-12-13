@@ -117,13 +117,3 @@ test('check login routes', async ()=>{
 
      
 },60000)
-
-// test('update username', async()=>{
-//     const response2 = await request.put('user/update')
-//                 .set({
-//                     userName: 'testUserUpdated',
-//                     password:'testpassword1'
-//                 });
-//     let user = userModel.findOne({email: 'testmail@gmail.com'});
-//     expect(user.userName).toBe('testUserUpdated');
-// })
