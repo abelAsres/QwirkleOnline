@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const userModel = require('./User');
 const Schema = mongoose.Schema;
 let moment = require('moment');
 moment().format();
@@ -9,9 +10,14 @@ const playHistorySchema = new Schema({
   gameID: String,
   score:Number,
   
+  playedOn:{
+    type: String,
+    default:moment(new Date()).format('MMMM Do YYYY, h:mm:ss a')
+  },
+
   createdAt: { 
-    type: String, 
-    default:moment().format('MMMM Do YYYY, h:mm:ss a')
+    type: Date, 
+    default: Date.now 
   }   
 });
 
