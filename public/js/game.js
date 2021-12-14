@@ -105,7 +105,7 @@ socket.on('server-start-game', (players) => {
 });
 
 socket.on('server-end-game', (data) => {
-  const {playerID, turnID, count} = data;
+  const {playerID, turnID, score, count} = data;
 
   finalScoreboard(count);
 

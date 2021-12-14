@@ -18,6 +18,10 @@
   display: none;
 }
 
+#final-score-table {
+  border: 2px solid #000000;
+  text-align: center;
+}
 /*
 #game-app {
     margin-left: 45%;

@@ -6,9 +6,11 @@ class Qwirkle {
         this.players = [];
         this.score = [];
         this.endGameArray = [];
+        this.hand = [6, 6, 6, 6];
+
         this.board = []; //= [[],[]]
         this.deck = [];
-        this.deckEmpty = false;
+        //this.deckEmpty = false;
         this.start = false;
         this.fistTilePlayed = false;
         this.players.push(userName);
@@ -33,10 +35,12 @@ class Qwirkle {
         this.endGameReset = this.turn;
     }
 
-    endGameCheck(handEmpty){
+    endGameCheck(){
         // If one player has an empty hand and no more tiles are available. 
-        if (this.deckEmpty && handEmpty) return true;
-        if (this.deckLength == 0) this.deckEmpty = true;
+        if (this.hand[this.turn] == 0){
+            this.turnScore+= 6;
+            return true;
+        } 
 
         // If all players select no more play. 
         for (let i = 0; i < this.endGameArray.length; i++){
@@ -91,7 +95,10 @@ class Qwirkle {
 
             this.deck.splice(i, 1);
 
-        } 
+        }
+        else {
+            this.hand[this.turn]--;
+        }
         return ret;
     }
 

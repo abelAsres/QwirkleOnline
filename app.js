@@ -183,9 +183,8 @@ io.on("connection", function (socket) {
     if (turnCheck(gameID, playerID)) {
       if (action == "no-more-plays") rList[gameID].noMorePlaySignal();
 
+      let endGame = rList[gameID].endGameCheck();
       let score = rList[gameID].endTurn();
-      let endGame = rList[gameID].endGameCheck(false);
-
       let turnID = rList[gameID].turn;
       let count = rList[gameID].players.length;
 
@@ -221,7 +220,8 @@ io.on("connection", function (socket) {
             })
           }
         })
-        io.to(gameID).emit("server-end-game", { playerID, turnID, count });    
+        let scores = rList[gameID].score;
+        io.to(gameID).emit("server-end-game", { playerID, turnID, scores, count});    
       }
       io.to(gameID).emit("server-end-turn", { playerID, turnID, score, count, endGame });
     }
