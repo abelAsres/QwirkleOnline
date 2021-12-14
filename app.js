@@ -157,15 +157,9 @@ io.on("connection", function (socket) {
     const { gameID, playerID, tiles } = data;
     if (turnCheck(gameID, playerID)) {
       let swappedTiles = [];
-      let tileArray = tiles;
       for (let i = 0; i < tiles.length; i++) {
-        const tileIndex = tileArray.indexOf(tiles[i]);
-        if (tileIndex > -1) {
-          rList[gameID].putTileInDeck(tileArray[tileIndex]);
-          tileArray.splice(tileIndex, 1);
-        }
-        tileArray.push(rList[gameID].dealTile());
-        swappedTiles.push(tileArray[tileArray.length - 1]);
+        rList[gameID].putTileInDeck(tiles[i]);
+        swappedTiles.push(rList[gameID].dealTile());
       }
       socket.emit("deal-swapped-tiles", { swappedTiles: swappedTiles });
     }
