@@ -136,7 +136,6 @@ io.on("connection", function (socket) {
 
     if (!rList[gameID].start) {
       rList[gameID].startGame();
-      console.log(rList[gameID].players);
       players = rList[gameID].players;
       io.to(gameID).emit('server-start-game', players);
 
@@ -146,7 +145,6 @@ io.on("connection", function (socket) {
         for (let j = 0; j < 6; j++) {
           tileArray.push(rList[gameID].dealTile());
         }
-        console.log(`Dealing ${tileArray} to ${rList[gameID].players[i]}`);
         io.to(gameID).emit("draw-tile", {
           target: rList[gameID].players[i],
           tileArray: tileArray,
@@ -162,18 +160,14 @@ io.on("connection", function (socket) {
       let tileArray = tiles;
       for (let i = 0; i < tiles.length; i++) {
         const tileIndex = tileArray.indexOf(tiles[i]);
-        console.log("TILEINDESX: " + tileIndex);
         if (tileIndex > -1) {
-          console.log("removing tile");
+          rList[gameID].putTileInDeck(tileArray[tileIndex]);
           tileArray.splice(tileIndex, 1);
         }
         tileArray.push(rList[gameID].dealTile());
         swappedTiles.push(tileArray[tileArray.length - 1]);
       }
       socket.emit("deal-swapped-tiles", { swappedTiles: swappedTiles });
-
-      console.log(rList[gameID].deck);
-      console.log(tileArray);
     }
   });
 
@@ -247,7 +241,7 @@ io.on("connection", function (socket) {
     }
   });
 
-  socket.on("deal-tile", (data) => {
+  socket.on("deal-tile", (data) => {Z
     const { gameID, playerID } = data;
     io.to(gameID).emit("deal-tile", { playerID });
   });
