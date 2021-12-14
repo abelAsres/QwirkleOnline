@@ -95,6 +95,10 @@ class Qwirkle {
         return ret;
     }
 
+    putTileInDeck(tile){
+        this.deck.push(tile);
+    }
+
     playFirstTile(tile, x, y) {
         let ret = false;
 
